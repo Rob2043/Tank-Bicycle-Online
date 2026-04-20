@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
+using System.Runtime.InteropServices;
 
 namespace Tanks.Complete
 {
@@ -16,22 +17,22 @@ namespace Tanks.Complete
         [Tooltip("The speed in unity unit/second the tank move at")]
         public float m_Speed = 12f;                 // How fast the tank moves forward and back.
         [Tooltip("The speed in deg/s that tank will rotate at")]
-        public float m_TurnSpeed = 180f;            // How fast the tank turns in degrees per second.
+        public float m_TurnSpeed = 10f;            // How fast the tank turns in degrees per second.
         [Tooltip("If set to true, the tank auto orient and move toward the pressed direction instead of rotating on left/right and move forward on up")]
         public bool m_IsDirectControl;
         public AudioSource m_MovementAudio;         // Reference to the audio source used to play engine sounds. NB: different to the shooting audio source.
         public AudioClip m_EngineIdling;            // Audio to play when the tank isn't moving.
         public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
-		public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
+        public float m_PitchRange = 0.2f;           // The amount by which the pitch of the engine noises can vary.
         [Tooltip("Is set to true this will be controlled by the computer and not a player")]
         public bool m_IsComputerControlled = false; // Is this tank player or computer controlled
         [HideInInspector]
         public TankInputUser m_InputUser;            // The Input User component for that tanks. Contains the Input Actions.
-        
+
         public Rigidbody Rigidbody => m_Rigidbody;
-        
+
         public int ControlIndex { get; set; } = -1; //this define the index of the control 1 = left keyboard or pad, 2 = right keyboard, -1 = no control
-        
+
         private string m_MovementAxisName;          // The name of the input axis for moving forward and back.
         private string m_TurnAxisName;              // The name of the input axis for turning.
         private Rigidbody m_Rigidbody;              // Reference used to move the tank.
@@ -40,7 +41,7 @@ namespace Tanks.Complete
         private Vector3 m_ExplosionForceValue;      // The current value of the force  applied on the tank from an explosion.
         private float m_OriginalPitch;              // The pitch of the audio source at the start of the scene.
         private ParticleSystem[] m_particleSystems; // References to all the particles systems used by the Tanks
-        
+
         private InputAction m_MoveAction;             // The InputAction used to move, retrieved from TankInputUser
         private InputAction m_TurnAction;             // The InputAction used to shot, retrieved from TankInputUser
 
@@ -48,21 +49,27 @@ namespace Tanks.Complete
         private EventBus _eventBus;
 
         private MoveSignal moveSignal;
-        
-        private void Awake ()
+
+        private RotateSignal rotateSignal;
+
+        public void Init()
         {
-            m_Rigidbody = GetComponent<Rigidbody> ();
-            
+            _eventBus = ServiceLocator.Current.Get<EventBus>(); 
+            moveSignal = new MoveSignal();
+            _eventBus.Subscribe<RotateSignal>(Rotate);
+
+            m_Rigidbody = GetComponent<Rigidbody>();
+
             m_InputUser = GetComponent<TankInputUser>();
             if (m_InputUser == null)
                 m_InputUser = gameObject.AddComponent<TankInputUser>();
         }
 
 
-        private void OnEnable ()
+        private void OnEnable()
         {
             // Computer controlled tank are kinematic
-            m_Rigidbody.isKinematic = false;
+            m_Rigidbody.isKinematic = false;            
 
             // Also reset the input values and explosion force.
             m_MovementInputValue = 0f;
@@ -79,24 +86,25 @@ namespace Tanks.Complete
         }
 
 
-        private void OnDisable ()
+        private void OnDisable()
         {
 
+            _eventBus.Unsubscribe<RotateSignal>(Rotate);
             // When the tank is turned off, set it to kinematic so it stops moving.
             m_Rigidbody.isKinematic = true;
 
             // Stop all particle system so it "reset" it's position to the actual one instead of thinking we moved when spawning
-            for(int i = 0; i < m_particleSystems.Length; ++i)
+            for (int i = 0; i < m_particleSystems.Length; ++i)
             {
                 m_particleSystems[i].Stop();
             }
         }
 
 
-        private void Start ()
+        private void Start()
         {
-            _eventBus = ServiceLocator.Current.Get<EventBus>();
-            moveSignal = new MoveSignal();
+
+
             // If this is computer controlled...
             if (m_IsComputerControlled)
             {
@@ -118,48 +126,48 @@ namespace Tanks.Complete
             {
                 ControlIndex = m_PlayerNumber;
             }
-            
+
             var mobileControl = FindAnyObjectByType<MobileUIControl>();
-            
-            // By default, ControlIndex 1 is matched to KeyboardLeft. But if there is a mobile UI control component in the scene
-            // and it is active (so we either are on mobile or it was force activated to test by the user) then we instead 
-            // match ControlIndex 1 to the virtual Gamepad on screen.
-            if (mobileControl != null && ControlIndex == 1)
-            {
-                m_InputUser.SetNewInputUser(InputUser.PerformPairingWithDevice(mobileControl.Device));
-                m_InputUser.ActivateScheme("Gamepad");
-            }
-            else
-            {
-                // otherwise if no mobile ui control is active, ControlIndex is KeyboardLeft scheme and ControlIndex 2 is KeyboardRight
-                //m_InputUser.ActivateScheme(ControlIndex == 1 ? "KeyboardLeft" : "KeyboardRight");
-                m_InputUser.ActivateScheme("Keyboard&Mouse");
-            }
 
-            // The axes names are based on player number.
-            m_MovementAxisName = "Vertical";
-            m_TurnAxisName = "Horizontal";
-            
-            // Get the action input from the TankInputUser component which will have taken care of copying them and
-            // binding them to the right device and control scheme
-            m_MoveAction = m_InputUser.ActionAsset.FindAction(m_MovementAxisName);
-            m_TurnAction = m_InputUser.ActionAsset.FindAction(m_TurnAxisName);
-            
-            // actions need to be enabled before they can react to input
-            m_MoveAction.Enable();
-            m_TurnAction.Enable();
+            // // By default, ControlIndex 1 is matched to KeyboardLeft. But if there is a mobile UI control component in the scene
+            // // and it is active (so we either are on mobile or it was force activated to test by the user) then we instead 
+            // // match ControlIndex 1 to the virtual Gamepad on screen.
+            // if (mobileControl != null && ControlIndex == 1)
+            // {
+            //     m_InputUser.SetNewInputUser(InputUser.PerformPairingWithDevice(mobileControl.Device));
+            //     m_InputUser.ActivateScheme("Gamepad");
+            // }
+            // else
+            // {
+            //     // otherwise if no mobile ui control is active, ControlIndex is KeyboardLeft scheme and ControlIndex 2 is KeyboardRight
+            //     //m_InputUser.ActivateScheme(ControlIndex == 1 ? "KeyboardLeft" : "KeyboardRight");
+            //     m_InputUser.ActivateScheme("Keyboard&Mouse");
+            // }
+
+            // // The axes names are based on player number.
+            // m_MovementAxisName = "Vertical";
+            // m_TurnAxisName = "Horizontal";
+
+            // // Get the action input from the TankInputUser component which will have taken care of copying them and
+            // // binding them to the right device and control scheme
+            // m_MoveAction = m_InputUser.ActionAsset.FindAction(m_MovementAxisName);
+            // m_TurnAction = m_InputUser.ActionAsset.FindAction(m_TurnAxisName);
+
+            // // actions need to be enabled before they can react to input
+            // m_MoveAction.Enable();
+            // m_TurnAction.Enable();
 
 
-            
+
             // Store the original pitch of the audio source.
-            if(m_MovementAudio)
+            if (m_MovementAudio)
             {
                 m_OriginalPitch = m_MovementAudio.pitch;
             }
         }
 
 
-        private void Update ()
+        private void Update()
         {
             // Computer controlled tank will be moved by the TankAI component, so only read input for player controlled tanks
             if (!m_IsComputerControlled)
@@ -167,28 +175,28 @@ namespace Tanks.Complete
                 _eventBus.Invoke(moveSignal);
                 //m_MovementInputValue = m_MoveAction.ReadValue<float>();
                 m_MovementInputValue = moveSignal.Speed;
-                m_TurnInputValue = m_TurnAction.ReadValue<float>();
+                //m_TurnInputValue = m_TurnAction.ReadValue<float>();
             }
-            
-            if(m_MovementAudio)
+
+            if (m_MovementAudio)
             {
-                EngineAudio ();
+                EngineAudio();
             }
         }
 
 
-        private void EngineAudio ()
+        private void EngineAudio()
         {
             // If there is no input (the tank is stationary)...
-            if (Mathf.Abs (m_MovementInputValue) < 0.1f && Mathf.Abs (m_TurnInputValue) < 0.1f)
+            if (Mathf.Abs(m_MovementInputValue) < 0.1f && Mathf.Abs(m_TurnInputValue) < 0.1f)
             {
                 // ... and if the audio source is currently playing the driving clip...
                 if (m_MovementAudio.clip == m_EngineDriving)
                 {
                     // ... change the clip to idling and play it.
                     m_MovementAudio.clip = m_EngineIdling;
-                    m_MovementAudio.pitch = Random.Range (m_OriginalPitch - m_PitchRange, m_OriginalPitch + m_PitchRange);
-                    m_MovementAudio.Play ();
+                    m_MovementAudio.pitch = Random.Range(m_OriginalPitch - m_PitchRange, m_OriginalPitch + m_PitchRange);
+                    m_MovementAudio.Play();
                 }
             }
             else
@@ -205,56 +213,58 @@ namespace Tanks.Complete
         }
 
 
-        private void FixedUpdate ()
+        private void FixedUpdate()
         {
-            // If this is using a gamepad or have direct control enabled, this used a different movement method : instead of
-            // "up" behind moving forward for the tank, it instead takes the gamepad move direction as the desired forward for the tank
-            // and will compute the speed and rotation needed to move the tank toward that direction.
-            if (m_InputUser.InputUser.controlScheme.Value.name == "Gamepad" ||  m_IsDirectControl)
-            {
-                var camForward = Camera.main.transform.forward;
-                camForward.y = 0;
+            // // If this is using a gamepad or have direct control enabled, this used a different movement method : instead of
+            // // "up" behind moving forward for the tank, it instead takes the gamepad move direction as the desired forward for the tank
+            // // and will compute the speed and rotation needed to move the tank toward that direction.
+            // if (m_InputUser.InputUser.controlScheme.Value.name == "Gamepad" ||  m_IsDirectControl)
+            // {
+            //     var camForward = Camera.main.transform.forward;
+            //     camForward.y = 0;
 
-                // If camForward is zero, use camera up instead
-                if (camForward.sqrMagnitude < 0.0001f)
-                {
-                    camForward = Camera.main.transform.up;
-                    camForward.y = 0;
-                }
+            //     // If camForward is zero, use camera up instead
+            //     if (camForward.sqrMagnitude < 0.0001f)
+            //     {
+            //         camForward = Camera.main.transform.up;
+            //         camForward.y = 0;
+            //     }
 
-                camForward.Normalize();
-                var camRight = Vector3.Cross(Vector3.up, camForward);
-                
-                //this creates a vector based on camera look (e.g. pressing up mean we want to go up in the direction of the
-                //camera, not forward in the direction of the tank)
-                m_RequestedDirection = (camForward * m_MovementInputValue + camRight * m_TurnInputValue);
-                m_RequestedDirection.Normalize();
-            }
-            
+            //     camForward.Normalize();
+            //     var camRight = Vector3.Cross(Vector3.up, camForward);
+
+            //     //this creates a vector based on camera look (e.g. pressing up mean we want to go up in the direction of the
+            //     //camera, not forward in the direction of the tank)
+            //     m_RequestedDirection = (camForward * m_MovementInputValue + camRight * m_TurnInputValue);
+            //     m_RequestedDirection.Normalize();
+            // }
+
             // Adjust the rigidbodies position and orientation in FixedUpdate.
-            Move ();
-            Turn ();
+            Move();
+            //Turn ();
         }
 
 
-        private void Move ()
+        private void Move()
         {
             float speedInput = 0.0f;
-            
-            // In direct control mode, the speed will depend on how far from the desired direction we are
-            if (m_InputUser.InputUser.controlScheme.Value.name == "Gamepad" || m_IsDirectControl)
-            {
-                speedInput = m_RequestedDirection.magnitude;
-                //if we are direct control, the speed of the move is based angle between current direction and the wanted
-                //direction. If under 90, full speed, then speed reduced between 90 and 180
-                speedInput *= 1.0f - Mathf.Clamp01((Vector3.Angle(m_RequestedDirection, transform.forward) - 90) / 90.0f);
-            }
-            else
-            {
-                // in normal "tank control" the speed value is how much we press "up/forward"
-                speedInput = m_MovementInputValue;
-            }
-            
+
+            speedInput = m_MovementInputValue;
+            //Frezee for some time 
+            // // In direct control mode, the speed will depend on how far from the desired direction we are
+            // if (m_InputUser.InputUser.controlScheme.Value.name == "Gamepad" || m_IsDirectControl)
+            // {
+            //     speedInput = m_RequestedDirection.magnitude;
+            //     //if we are direct control, the speed of the move is based angle between current direction and the wanted
+            //     //direction. If under 90, full speed, then speed reduced between 90 and 180
+            //     speedInput *= 1.0f - Mathf.Clamp01((Vector3.Angle(m_RequestedDirection, transform.forward) - 90) / 90.0f);
+            // }
+            // else
+            // {
+            //     // in normal "tank control" the speed value is how much we press "up/forward"
+            //     speedInput = m_MovementInputValue;
+            // }
+
             // Create a vector in the direction the tank is facing with a magnitude based on the input, speed and the time between frames.
             Vector3 movement = transform.forward * speedInput * m_Speed;
 
@@ -264,11 +274,12 @@ namespace Tanks.Complete
         }
 
 
-        private void Turn ()
+        private void Turn()
         {
             Quaternion turnRotation;
             // If in direct control...
-            if (m_InputUser.InputUser.controlScheme.Value.name == "Gamepad" || m_IsDirectControl)
+            //m_InputUser.InputUser.controlScheme.Value.name == "Gamepad"
+            if (m_IsDirectControl)
             {
                 // Compute the rotation needed to reach the desired direction
                 float angleTowardTarget = Vector3.SignedAngle(m_RequestedDirection, transform.forward, transform.up);
@@ -280,11 +291,24 @@ namespace Tanks.Complete
                 float turn = m_TurnInputValue * m_TurnSpeed * Time.deltaTime;
 
                 // Make this into a rotation in the y axis.
-                turnRotation = Quaternion.Euler (0f, turn, 0f);
+                turnRotation = Quaternion.Euler(0f, turn, 0f);
             }
 
             // Apply this rotation to the rigidbody's rotation.
-            m_Rigidbody.MoveRotation (m_Rigidbody.rotation * turnRotation);
+            m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
+        }
+
+        private void Rotate(RotateSignal rotate)
+        {
+            Vector2 vector2 = rotate.Vector;
+            if (vector2.sqrMagnitude < 0.01f)
+                return;
+
+            Vector3 direction = new Vector3(vector2.x, 0, vector2.y);
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, m_TurnSpeed * Time.deltaTime);
         }
 
         public void AddExplosionForce(float explosionForce, Vector3 explosionPosition, float explosionRadius, float upwardsModifier = 0f)

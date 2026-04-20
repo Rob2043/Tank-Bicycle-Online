@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.Layouts;
 using UnityEngine.InputSystem.OnScreen;
+using CustomEventBus;
+using TankBycicleOnline.CallBacks;
+
 
 namespace Tanks.Complete
 {
@@ -17,19 +20,23 @@ namespace Tanks.Complete
         public float magnitudeMultiplier = 1f;
         public bool invertXOutputValue;
         public bool invertYOutputValue;
-    
+
         [InputControl(layout = "Vector2")]
         [SerializeField]
         private string m_ControlPath;
-    
+
+        private EventBus eventBus;
+        private RotateSignal rotateSignal;
+
         void Start()
         {
+            eventBus = ServiceLocator.Current.Get<EventBus>();
             SetupHandle();
         }
 
         private void SetupHandle()
         {
-            if(handleRect)
+            if (handleRect)
             {
                 UpdateHandleRectPosition(Vector2.zero);
             }
@@ -44,27 +51,27 @@ namespace Tanks.Complete
         {
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(containerRect, eventData.position, eventData.pressEventCamera, out Vector2 position);
-        
+
             position = ApplySizeDelta(position);
-        
+
             Vector2 clampedPosition = ClampValuesToMagnitude(position);
 
             Vector2 outputPosition = ApplyInversionFilter(position);
 
             OutputPointerEventValue(outputPosition * magnitudeMultiplier);
 
-            if(handleRect)
+            if (handleRect)
             {
                 UpdateHandleRectPosition(clampedPosition * joystickRange);
             }
-        
+
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             OutputPointerEventValue(Vector2.zero);
 
-            if(handleRect)
+            if (handleRect)
             {
                 UpdateHandleRectPosition(Vector2.zero);
             }
@@ -72,7 +79,9 @@ namespace Tanks.Complete
 
         private void OutputPointerEventValue(Vector2 pointerPosition)
         {
-            SendValueToControl(pointerPosition);
+            rotateSignal = new RotateSignal(pointerPosition);
+            eventBus.Invoke(rotateSignal);
+            //SendValueToControl(pointerPosition);
         }
 
         private void UpdateHandleRectPosition(Vector2 newPosition)
@@ -82,8 +91,8 @@ namespace Tanks.Complete
 
         Vector2 ApplySizeDelta(Vector2 position)
         {
-            float x = (position.x/containerRect.sizeDelta.x) * 2.5f;
-            float y = (position.y/containerRect.sizeDelta.y) * 2.5f;
+            float x = (position.x / containerRect.sizeDelta.x) * 2.5f;
+            float y = (position.y / containerRect.sizeDelta.y) * 2.5f;
             return new Vector2(x, y);
         }
 
@@ -94,12 +103,12 @@ namespace Tanks.Complete
 
         Vector2 ApplyInversionFilter(Vector2 position)
         {
-            if(invertXOutputValue)
+            if (invertXOutputValue)
             {
                 position.x = InvertValue(position.x);
             }
 
-            if(invertYOutputValue)
+            if (invertYOutputValue)
             {
                 position.y = InvertValue(position.y);
             }
@@ -111,7 +120,7 @@ namespace Tanks.Complete
         {
             return -value;
         }
-    
+
         protected override string controlPathInternal { get => m_ControlPath; set => m_ControlPath = value; }
     }
 }

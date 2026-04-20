@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using CustomEventBus;
 using UnityEngine;
+using Tanks.Complete;
 
 namespace Game.Level
 {
     public class InitGame : MonoBehaviour
     {
         [SerializeField] private InputManager inputManager;
+        [SerializeField] private TankMovement tankMovement;
 
         private EventBus _eventBus;
 
@@ -30,6 +32,7 @@ namespace Game.Level
         private void Init()
         {
             inputManager.Init();
+            tankMovement.Init();
         }
 
         private void AddDisposables()
