@@ -4,7 +4,7 @@ namespace TankBycicleOnline.CallBacks
 {
     public class MoveSignal
     {
-        public float _speed;
+        public float Speed;
     }
 }
 

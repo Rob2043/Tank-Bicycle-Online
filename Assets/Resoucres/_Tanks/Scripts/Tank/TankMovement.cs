@@ -166,7 +166,7 @@ namespace Tanks.Complete
             {
                 _eventBus.Invoke(moveSignal);
                 //m_MovementInputValue = m_MoveAction.ReadValue<float>();
-                m_MovementInputValue = moveSignal._speed;
+                m_MovementInputValue = moveSignal.Speed;
                 m_TurnInputValue = m_TurnAction.ReadValue<float>();
             }
             

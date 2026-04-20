@@ -44,5 +44,9 @@ namespace Game.Level
                 disposable.Dispose();
             }
         }
+
+        private void OnDisable() {
+            inputManager.Disable();
+        }
     }
 }

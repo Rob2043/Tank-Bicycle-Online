@@ -27,6 +27,11 @@ public class InputManager : MonoBehaviour
 
     private void GiveSpeed(MoveSignal moveSignal)
     {
-        moveSignal._speed = tankInput.GetSpeed();
+        moveSignal.Speed = tankInput.GetSpeed();
+    }
+
+    public void Disable()
+    {
+        _eventBus.Unsubscribe<MoveSignal>(GiveSpeed);
     }
 }
