@@ -7,7 +7,7 @@ namespace Game.Level
 {
     public class InitGame : MonoBehaviour
     {
-
+        [SerializeField] private InputManager inputManager;
 
         private EventBus _eventBus;
 
@@ -29,7 +29,7 @@ namespace Game.Level
 
         private void Init()
         {
-            
+            inputManager.Init();
         }
 
         private void AddDisposables()

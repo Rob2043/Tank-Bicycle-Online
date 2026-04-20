@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
+using CustomEventBus;
+using TankBycicleOnline.CallBacks;
 
 namespace Tanks.Complete
 {
@@ -43,6 +45,9 @@ namespace Tanks.Complete
         private InputAction m_TurnAction;             // The InputAction used to shot, retrieved from TankInputUser
 
         private Vector3 m_RequestedDirection;       // In Direct Control mode, store the direction the user *wants* to go toward
+        private EventBus _eventBus;
+
+        private MoveSignal moveSignal;
         
         private void Awake ()
         {
@@ -76,6 +81,7 @@ namespace Tanks.Complete
 
         private void OnDisable ()
         {
+
             // When the tank is turned off, set it to kinematic so it stops moving.
             m_Rigidbody.isKinematic = true;
 
@@ -89,6 +95,8 @@ namespace Tanks.Complete
 
         private void Start ()
         {
+            _eventBus = ServiceLocator.Current.Get<EventBus>();
+            moveSignal = new MoveSignal();
             // If this is computer controlled...
             if (m_IsComputerControlled)
             {
@@ -103,43 +111,43 @@ namespace Tanks.Complete
                 }
             }
 
-            // // If no control index was set, this mean this is a scene without a GameManager and that tank was manually
-            // // added to an empty scene, so we used the manually set Player Number in the Inspector as the ControlIndex,
-            // // so Player 1 will be ControlIndex 1 -> KeyboardLeft and Player 2 -> KeyboardRight
-            // if (ControlIndex == -1 && !m_IsComputerControlled)
-            // {
-            //     ControlIndex = m_PlayerNumber;
-            // }
+            // If no control index was set, this mean this is a scene without a GameManager and that tank was manually
+            // added to an empty scene, so we used the manually set Player Number in the Inspector as the ControlIndex,
+            // so Player 1 will be ControlIndex 1 -> KeyboardLeft and Player 2 -> KeyboardRight
+            if (ControlIndex == -1 && !m_IsComputerControlled)
+            {
+                ControlIndex = m_PlayerNumber;
+            }
             
-            // var mobileControl = FindAnyObjectByType<MobileUIControl>();
+            var mobileControl = FindAnyObjectByType<MobileUIControl>();
             
-            // // By default, ControlIndex 1 is matched to KeyboardLeft. But if there is a mobile UI control component in the scene
-            // // and it is active (so we either are on mobile or it was force activated to test by the user) then we instead 
-            // // match ControlIndex 1 to the virtual Gamepad on screen.
-            // if (mobileControl != null && ControlIndex == 1)
-            // {
-            //     m_InputUser.SetNewInputUser(InputUser.PerformPairingWithDevice(mobileControl.Device));
-            //     m_InputUser.ActivateScheme("Gamepad");
-            // }
-            // else
-            // {
-            //     // otherwise if no mobile ui control is active, ControlIndex is KeyboardLeft scheme and ControlIndex 2 is KeyboardRight
-            //     //m_InputUser.ActivateScheme(ControlIndex == 1 ? "KeyboardLeft" : "KeyboardRight");
-            //     m_InputUser.ActivateScheme("Keyboard&Mouse");
-            // }
+            // By default, ControlIndex 1 is matched to KeyboardLeft. But if there is a mobile UI control component in the scene
+            // and it is active (so we either are on mobile or it was force activated to test by the user) then we instead 
+            // match ControlIndex 1 to the virtual Gamepad on screen.
+            if (mobileControl != null && ControlIndex == 1)
+            {
+                m_InputUser.SetNewInputUser(InputUser.PerformPairingWithDevice(mobileControl.Device));
+                m_InputUser.ActivateScheme("Gamepad");
+            }
+            else
+            {
+                // otherwise if no mobile ui control is active, ControlIndex is KeyboardLeft scheme and ControlIndex 2 is KeyboardRight
+                //m_InputUser.ActivateScheme(ControlIndex == 1 ? "KeyboardLeft" : "KeyboardRight");
+                m_InputUser.ActivateScheme("Keyboard&Mouse");
+            }
 
-            // // The axes names are based on player number.
-            // m_MovementAxisName = "Vertical";
-            // m_TurnAxisName = "Horizontal";
+            // The axes names are based on player number.
+            m_MovementAxisName = "Vertical";
+            m_TurnAxisName = "Horizontal";
             
-            // // Get the action input from the TankInputUser component which will have taken care of copying them and
-            // // binding them to the right device and control scheme
-            // m_MoveAction = m_InputUser.ActionAsset.FindAction(m_MovementAxisName);
-            // m_TurnAction = m_InputUser.ActionAsset.FindAction(m_TurnAxisName);
+            // Get the action input from the TankInputUser component which will have taken care of copying them and
+            // binding them to the right device and control scheme
+            m_MoveAction = m_InputUser.ActionAsset.FindAction(m_MovementAxisName);
+            m_TurnAction = m_InputUser.ActionAsset.FindAction(m_TurnAxisName);
             
-            // // actions need to be enabled before they can react to input
-            // m_MoveAction.Enable();
-            // m_TurnAction.Enable();
+            // actions need to be enabled before they can react to input
+            m_MoveAction.Enable();
+            m_TurnAction.Enable();
 
 
             
@@ -156,7 +164,9 @@ namespace Tanks.Complete
             // Computer controlled tank will be moved by the TankAI component, so only read input for player controlled tanks
             if (!m_IsComputerControlled)
             {
-                m_MovementInputValue = m_MoveAction.ReadValue<float>();
+                _eventBus.Invoke(moveSignal);
+                //m_MovementInputValue = m_MoveAction.ReadValue<float>();
+                m_MovementInputValue = moveSignal._speed;
                 m_TurnInputValue = m_TurnAction.ReadValue<float>();
             }
             
