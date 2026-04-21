@@ -1,13 +1,8 @@
 ﻿<Solution>
-  <Project Path="LeanTransition.csproj" />
   <Project Path="Unity.InputSystem.csproj" />
-  <Project Path="LeanTransition.Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
-  <Project Path="LeanGUI.csproj" />
   <Project Path="Unity.InputSystem.ForUI.csproj" />
-  <Project Path="LeanCommon.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
-  <Project Path="CW.Common.csproj" />
   <Project Path="Unity.InputSystem.TestFramework.csproj" />
   <Project Path="Unity.InputSystem.DocCodeSamples.csproj" />
   <Project Path="Unity.InputSystem.IntegrationTests.csproj" />
