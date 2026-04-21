@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CustomEventBus;
 using UnityEngine;
 using Tanks.Complete;
+using System.Security.Permissions;
 
 namespace Game.Level
 {
@@ -10,6 +11,9 @@ namespace Game.Level
     {
         [SerializeField] private InputManager inputManager;
         [SerializeField] private TankMovement[] tankMovement;
+        [SerializeField] private ScoreManager scoreManager;
+        [SerializeField] private Timer timer;
+        [SerializeField] private RespawnManager respawnManager;
 
         private EventBus _eventBus;
 
@@ -32,6 +36,9 @@ namespace Game.Level
         private void Init()
         {
             inputManager.Init();
+            scoreManager.Init();
+            timer.Init();
+            respawnManager.Init();
             foreach (var item in tankMovement)
             {
                 item.Init();
@@ -51,8 +58,15 @@ namespace Game.Level
             }
         }
 
-        private void OnDisable() {
+        private void OnDisable()
+        {
             inputManager.Disable();
+            scoreManager.Disable();
+            respawnManager.Disable();
+            foreach (var item in tankMovement)
+            {
+                item.Disable();
+            }
         }
     }
 }

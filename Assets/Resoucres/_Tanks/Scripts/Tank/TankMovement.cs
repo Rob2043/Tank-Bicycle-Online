@@ -10,7 +10,7 @@ namespace Tanks.Complete
     //Ensure it run before the TankShooting component as TankShooting grabs the InputUser from this when there are no
     //GameManager set (used during learning experience to test tank in empty scenes)
     [DefaultExecutionOrder(-10)]
-    public class TankMovement : MonoBehaviour
+    public class TankMovement : MonoBehaviour, ITankId
     {
         [Tooltip("The player number. Without a tank selection menu, Player 1 is left keyboard control, Player 2 is right keyboard")]
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
@@ -30,6 +30,7 @@ namespace Tanks.Complete
         public TankInputUser m_InputUser;            // The Input User component for that tanks. Contains the Input Actions.
 
         public Rigidbody Rigidbody => m_Rigidbody;
+        public int ID {get; set;}
 
         public int ControlIndex { get; set; } = -1; //this define the index of the control 1 = left keyboard or pad, 2 = right keyboard, -1 = no control
 
@@ -60,7 +61,7 @@ namespace Tanks.Complete
                 moveSignal = new MoveSignal();
                 _eventBus.Subscribe<RotateSignal>(Rotate);
             }
-
+            ID = m_PlayerNumber;
 
             m_Rigidbody = GetComponent<Rigidbody>();
 
@@ -106,7 +107,7 @@ namespace Tanks.Complete
         }
 
 
-        private void OnDisable()
+        public void Disable()
         {
 
             _eventBus.Unsubscribe<RotateSignal>(Rotate);

@@ -200,7 +200,7 @@ namespace Tanks.Complete
 
             // Create an instance of the shell and store a reference to it's rigidbody.
             Rigidbody shellInstance =
-                Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+                Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation, transform) as Rigidbody;
 
             // Set the shell's velocity to the launch force in the fire position's forward direction.
             shellInstance.linearVelocity = m_CurrentLaunchForce * m_FireTransform.forward;
