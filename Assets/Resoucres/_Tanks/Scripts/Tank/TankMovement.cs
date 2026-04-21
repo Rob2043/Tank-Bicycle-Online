@@ -320,13 +320,17 @@ namespace Tanks.Complete
             if (vector2.sqrMagnitude < 0.01f)
                 return;
             
-            float angel = -Mathf.Atan2(vector2.y, vector2.x) * Mathf.Rad2Deg;
+            float direction = Mathf.Sign(vector2.x);
+            float rotationAmount = direction * m_TurnSpeed * Time.deltaTime;
 
-            angel += 90;
+            transform.Rotate(0f,rotationAmount,0f);
+            // float angel = -Mathf.Atan2(vector2.y, vector2.x) * Mathf.Rad2Deg;
 
-            Quaternion targetRotation = Quaternion.Euler(0f,angel,0f);
+            // //angel += 90;
 
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, m_TurnSpeed * Time.deltaTime);
+            // Quaternion targetRotation = Quaternion.Euler(0f,angel,0f);
+
+            // transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, m_TurnSpeed * Time.deltaTime);
         }
 
         public void AddExplosionForce(float explosionForce, Vector3 explosionPosition, float explosionRadius, float upwardsModifier = 0f)
