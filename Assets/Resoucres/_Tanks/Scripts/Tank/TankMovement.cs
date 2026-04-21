@@ -54,9 +54,13 @@ namespace Tanks.Complete
 
         public void Init()
         {
-            _eventBus = ServiceLocator.Current.Get<EventBus>();
-            moveSignal = new MoveSignal();
-            _eventBus.Subscribe<RotateSignal>(Rotate);
+            if (!m_IsComputerControlled)
+            {
+                _eventBus = ServiceLocator.Current.Get<EventBus>();
+                moveSignal = new MoveSignal();
+                _eventBus.Subscribe<RotateSignal>(Rotate);
+            }
+
 
             m_Rigidbody = GetComponent<Rigidbody>();
 
@@ -319,11 +323,11 @@ namespace Tanks.Complete
             Vector2 vector2 = rotate.Vector;
             if (vector2.sqrMagnitude < 0.01f)
                 return;
-            
+
             float direction = Mathf.Sign(vector2.x);
             float rotationAmount = direction * m_TurnSpeed * Time.deltaTime;
 
-            transform.Rotate(0f,rotationAmount,0f);
+            transform.Rotate(0f, rotationAmount, 0f);
             // float angel = -Mathf.Atan2(vector2.y, vector2.x) * Mathf.Rad2Deg;
 
             // //angel += 90;

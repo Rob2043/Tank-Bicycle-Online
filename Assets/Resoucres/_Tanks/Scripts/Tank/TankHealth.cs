@@ -143,7 +143,7 @@ namespace Tanks.Complete
             m_ExplosionAudio.Play();
 
             // Turn the tank off.
-            gameObject.SetActive (false);
+            this.gameObject.SetActive (false);
         }
     }
 }
