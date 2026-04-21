@@ -28,10 +28,18 @@ namespace Tanks.Complete
         private EventBus eventBus;
         private RotateSignal rotateSignal;
 
+        private Vector2 mainVector = new Vector2();
+
         void Start()
         {
             eventBus = ServiceLocator.Current.Get<EventBus>();
             SetupHandle();
+        }
+
+        private void Update()
+        {
+            rotateSignal = new RotateSignal(mainVector);
+            eventBus.Invoke(rotateSignal);
         }
 
         private void SetupHandle()
@@ -79,8 +87,8 @@ namespace Tanks.Complete
 
         private void OutputPointerEventValue(Vector2 pointerPosition)
         {
-            rotateSignal = new RotateSignal(pointerPosition);
-            eventBus.Invoke(rotateSignal);
+            mainVector = pointerPosition;
+
             //SendValueToControl(pointerPosition);
         }
 

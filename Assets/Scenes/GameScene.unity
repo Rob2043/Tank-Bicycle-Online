@@ -119,6 +119,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &52329346
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 52329347}
+  - component: {fileID: 52329348}
+  m_Layer: 5
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &52329347
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52329346}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 802172555}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &52329348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52329346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.OnScreen.OnScreenButton
+  m_ControlPath: <Touchscreen>/Press
 --- !u!1 &123053890
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,7 +532,7 @@ GameObject:
   - component: {fileID: 383649838}
   - component: {fileID: 383649841}
   - component: {fileID: 383649840}
-  - component: {fileID: 383649839}
+  - component: {fileID: 383649842}
   m_Layer: 5
   m_Name: ActionButton
   m_TagString: Untagged
@@ -511,19 +560,6 @@ RectTransform:
   m_AnchoredPosition: {x: -105.83716, y: 155.22786}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &383649839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 383649837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Gamepad>/buttonSouth
 --- !u!114 &383649840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,6 +598,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383649837}
   m_CullTransparentMesh: 1
+--- !u!114 &383649842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 383649837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.OnScreen.OnScreenButton
+  m_ControlPath: <Touchscreen>/Press
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,6 +986,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704390475}
   m_CullTransparentMesh: 1
+--- !u!114 &758952535 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7273797243879270933, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+  m_PrefabInstance: {fileID: 1600245463}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e4cc0827b572b5408b2cd8eb8b456b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &802172551
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,6 +1094,7 @@ RectTransform:
   - {fileID: 1608775715}
   - {fileID: 383649838}
   - {fileID: 1876149847}
+  - {fileID: 52329347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1104,7 +1165,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.7
+      value: -6.91
       objectReference: {fileID: 0}
     - target: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1305,6 +1366,79 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1001 &1600245463
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7273797243857670557, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243857785247, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243857785247, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.50859
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.64027
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.03028
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869331245, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243869566079, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_Name
+      value: Demo_Tank - ATV Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7273797243879270933, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
+      propertyPath: m_IsComputerControlled
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e8a208e9857544b0292cc3d24b0106b6, type: 3}
 --- !u!1 &1608775714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1512,7 +1646,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7422956501987788209, guid: 47992123b90daf74db2ddd1d52e6552a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2051491110}
   m_SourcePrefab: {fileID: 100100000, guid: 47992123b90daf74db2ddd1d52e6552a, type: 3}
 --- !u!1 &1793109863
 GameObject:
@@ -1805,7 +1942,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Level.InitGame
   inputManager: {fileID: 239388715}
-  tankMovement: {fileID: 306931421}
+  tankMovement:
+  - {fileID: 306931421}
+  - {fileID: 758952535}
 --- !u!4 &2024374105
 Transform:
   m_ObjectHideFlags: 0
@@ -1821,6 +1960,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2051491105 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7422956501987788209, guid: 47992123b90daf74db2ddd1d52e6552a, type: 3}
+  m_PrefabInstance: {fileID: 1630284072}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2051491110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051491105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 6832ba01c64106e45b665b6035e20d80, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1833,3 +2009,4 @@ SceneRoots:
   - {fileID: 802172555}
   - {fileID: 142314696}
   - {fileID: 2024374105}
+  - {fileID: 1600245463}

@@ -54,7 +54,7 @@ namespace Tanks.Complete
 
         public void Init()
         {
-            _eventBus = ServiceLocator.Current.Get<EventBus>(); 
+            _eventBus = ServiceLocator.Current.Get<EventBus>();
             moveSignal = new MoveSignal();
             _eventBus.Subscribe<RotateSignal>(Rotate);
 
@@ -63,13 +63,9 @@ namespace Tanks.Complete
             m_InputUser = GetComponent<TankInputUser>();
             if (m_InputUser == null)
                 m_InputUser = gameObject.AddComponent<TankInputUser>();
-        }
 
-
-        private void OnEnable()
-        {
             // Computer controlled tank are kinematic
-            m_Rigidbody.isKinematic = false;            
+            m_Rigidbody.isKinematic = false;
 
             // Also reset the input values and explosion force.
             m_MovementInputValue = 0f;
@@ -83,6 +79,26 @@ namespace Tanks.Complete
             {
                 m_particleSystems[i].Play();
             }
+        }
+
+
+        private void OnEnable()
+        {
+            // // Computer controlled tank are kinematic
+            // m_Rigidbody.isKinematic = false;
+
+            // // Also reset the input values and explosion force.
+            // m_MovementInputValue = 0f;
+            // m_TurnInputValue = 0f;
+            // m_ExplosionForceValue = Vector3.zero;
+            // // We grab all the Particle systems child of that Tank to be able to Stop/Play them on Deactivate/Activate
+            // // It is needed because we move the Tank when spawning it, and if the Particle System is playing while we do that
+            // // it "think" it move from (0,0,0) to the spawn point, creating a huge trail of smoke
+            // m_particleSystems = GetComponentsInChildren<ParticleSystem>();
+            // for (int i = 0; i < m_particleSystems.Length; ++i)
+            // {
+            //     m_particleSystems[i].Play();
+            // }
         }
 
 
@@ -303,10 +319,12 @@ namespace Tanks.Complete
             Vector2 vector2 = rotate.Vector;
             if (vector2.sqrMagnitude < 0.01f)
                 return;
+            
+            float angel = -Mathf.Atan2(vector2.y, vector2.x) * Mathf.Rad2Deg;
 
-            Vector3 direction = new Vector3(vector2.x, 0, vector2.y);
+            angel += 90;
 
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            Quaternion targetRotation = Quaternion.Euler(0f,angel,0f);
 
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, m_TurnSpeed * Time.deltaTime);
         }
