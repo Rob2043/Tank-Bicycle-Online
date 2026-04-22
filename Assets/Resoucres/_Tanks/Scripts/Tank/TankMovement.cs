@@ -15,6 +15,7 @@ namespace Tanks.Complete
         [Tooltip("The player number. Without a tank selection menu, Player 1 is left keyboard control, Player 2 is right keyboard")]
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
         [SerializeField] private float m_BackSpeedMultiplier = 0.6f;
+        [SerializeField] private string playerName;
         [Tooltip("The speed in unity unit/second the tank move at")]
         public float m_Speed = 12f;                 // How fast the tank moves forward and back.
         [Tooltip("The speed in deg/s that tank will rotate at")]
@@ -32,6 +33,7 @@ namespace Tanks.Complete
 
         public Rigidbody Rigidbody => m_Rigidbody;
         public int ID { get; set; }
+        public string Name { get; set; }
 
         public int ControlIndex { get; set; } = -1; //this define the index of the control 1 = left keyboard or pad, 2 = right keyboard, -1 = no control
 
@@ -63,6 +65,7 @@ namespace Tanks.Complete
                 _eventBus.Subscribe<RotateSignal>(Rotate);
             }
             ID = m_PlayerNumber;
+            Name = playerName;
 
             m_Rigidbody = GetComponent<Rigidbody>();
 

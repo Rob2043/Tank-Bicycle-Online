@@ -24,7 +24,7 @@ public class RespawnManager : MonoBehaviour
 
     private void Respawn(RespawnSignal respawnSignal)
     {
-        int randomPos = UnityEngine.Random.Range(0,spawnPositon.Length);
+        int randomPos = Random.Range(0,spawnPositon.Length);
         respawnSignal.ObjectTransform = spawnPositon[randomPos];
     }
 }

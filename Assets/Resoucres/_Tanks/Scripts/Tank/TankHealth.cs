@@ -68,12 +68,12 @@ namespace Tanks.Complete
             eventBus = ServiceLocator.Current.Get<EventBus>();
         }
 
-        public void TakeDamage(float amount, int name)
+        public void TakeDamage(float amount, int id, string name)
         {
             // Check if the tank is not invincible
             if (!m_IsInvincible)
             {
-                giveScoreSignal = new GiveScoreSignal(Contstants.DamageScore, name);
+                giveScoreSignal = new GiveScoreSignal(Contstants.DamageScore, id,name);
                 eventBus.Invoke(giveScoreSignal);
                 // Reduce current health by the amount of damage done.
                 m_CurrentHealth -= amount * (1 - m_ShieldValue);
@@ -84,7 +84,7 @@ namespace Tanks.Complete
                 // If the current health is at or below zero and it has not yet been registered, call OnDeath.
                 if (m_CurrentHealth <= 0f && !m_Dead)
                 {
-                    giveScoreSignal = new GiveScoreSignal(Contstants.DeathScore, name);
+                    giveScoreSignal = new GiveScoreSignal(Contstants.DeathScore, id,name);
                     eventBus.Invoke(giveScoreSignal);
                     OnDeath();
                 }

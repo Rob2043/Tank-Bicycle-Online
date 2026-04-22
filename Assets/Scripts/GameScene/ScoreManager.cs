@@ -4,6 +4,7 @@ using TankBycicleOnline.CallBacks;
 using TMPro;
 using System.Collections.Generic;
 
+
 public class ScoreManager : MonoBehaviour
 {
     [Header("UI")]
@@ -11,12 +12,10 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private TMP_Text[] menuScoreTextes = new TMP_Text[5];
     [Header("Points")]
     [SerializeField] private int playerID;
-    private Dictionary<int, int> dataOfPlayers = new Dictionary<int, int>();
+    private Dictionary<int, PlayerData> dataOfPlayers = new Dictionary<int, PlayerData>();
     private List<int> playersId = new List<int>();
-    private List<int> scoreArray = new List<int>();
-    private int playersScore = 0;
+    private List<PlayerData> scoreArray = new List<PlayerData>();
     private EventBus eventBus;
-    private GiveScoreSignal giveScoreSignal;
 
     public void Init()
     {
@@ -33,19 +32,19 @@ public class ScoreManager : MonoBehaviour
 
     private void GetScore(GiveScoreSignal scoreSignal)
     {
-        if (!dataOfPlayers.ContainsKey(scoreSignal.Name))
+        if (!dataOfPlayers.ContainsKey(scoreSignal.ID))
         {
-            dataOfPlayers.Add(scoreSignal.Name, scoreSignal.Score);
-            playersId.Add(scoreSignal.Name);
+            dataOfPlayers.Add(scoreSignal.ID, new PlayerData{ Score = scoreSignal.Score, Name = scoreSignal.Name});
+            playersId.Add(scoreSignal.ID);
         }
         else
         {
-            dataOfPlayers[scoreSignal.Name] += scoreSignal.Score;
+            dataOfPlayers[scoreSignal.ID].Score += scoreSignal.Score;
         }
 
-        if (scoreSignal.Name == playerID)
+        if (scoreSignal.ID == playerID)
         {
-            scoreText.text = $"{dataOfPlayers[playerID]}";
+            scoreText.text = $"{dataOfPlayers[playerID].Score}";
         }
 
     }
@@ -56,19 +55,26 @@ public class ScoreManager : MonoBehaviour
         //menuScoreText.text = $"{dataOfPlayers[playerID]}";
         foreach (var item in playersId)
         {
-            int score = dataOfPlayers[item];
-            int index = scoreArray.FindIndex(x => score > x);
+            PlayerData data = dataOfPlayers[item];
+            int index = scoreArray.FindIndex(x => data.Score > x.Score);
 
             if(index == -1)
-                scoreArray.Add(score);
+                scoreArray.Add(data);
             else
-                scoreArray.Insert(index,score);
+                scoreArray.Insert(index,data);
         }
         for (int i = 0; i < menuScoreTextes.Length; i++)
         {
-            menuScoreTextes[i].text = $"{scoreArray[i]}";
+            menuScoreTextes[i].text = $"{scoreArray[i].Name}: {scoreArray[i].Score}";
         }
 
     }
 
+}
+
+[System.Serializable]
+public class PlayerData
+{
+    public int Score;
+    public string Name;
 }

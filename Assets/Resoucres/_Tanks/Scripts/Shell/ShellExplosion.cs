@@ -50,12 +50,14 @@ namespace Tanks.Complete
                 // Calculate the amount of damage the target should take based on it's distance from the shell.
                 float damage = CalculateDamage(targetRigidbody.position);
                 int id = 0;
+                string name = "";
                 if (transform.parent.TryGetComponent<ITankId>(out var tankId))
                 {
                     id = tankId.ID;
+                    name = tankId.Name;
                 }
                 // Deal this damage to the tank.
-                targetHealth.TakeDamage(damage, id);
+                targetHealth.TakeDamage(damage, id , name);
             }
 
             // Unparent the particles from the shell.

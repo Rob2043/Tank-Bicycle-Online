@@ -37,6 +37,12 @@ public class EnergyManager : MonoBehaviour
     {
         slider.value = currentEnergy;
         eventBus.Invoke(moveSignal);
+        if (currentEnergy <= 0f)
+        {
+            float enrgy = moveSignal.Speed;
+            currentEnergy += enrgy * Time.deltaTime;
+            return;
+        }
         float generatedEnergy = moveSignal.Speed;
         currentEnergy += generatedEnergy * Time.deltaTime;
 
@@ -50,7 +56,7 @@ public class EnergyManager : MonoBehaviour
                 currentEnergy = 0f;
         }
 
-        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+        //currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
 
 
         if (slider != null)
