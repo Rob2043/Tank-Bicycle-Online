@@ -1,8 +1,6 @@
 using UnityEngine;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
-using System.ComponentModel.Design;
-
 
 
 public class RespawnManager : MonoBehaviour
@@ -26,5 +24,6 @@ public class RespawnManager : MonoBehaviour
     {
         int randomPos = Random.Range(0,spawnPositon.Length);
         respawnSignal.ObjectTransform = spawnPositon[randomPos];
+        SimpleEventBus.GiveTankId.Invoke(respawnSignal.TankId);
     }
 }

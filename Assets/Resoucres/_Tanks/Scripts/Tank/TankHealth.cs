@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
-using TankBycicleOnline.Contant;
+using TankBycicleOnline.Constants;
 using System.Collections;
 
 
@@ -28,6 +28,7 @@ namespace Tanks.Complete
         private EventBus eventBus;
         private GiveScoreSignal giveScoreSignal;
         private RespawnSignal respanSignal;
+        private ITankId myTankId;
 
         private void Awake()
         {
@@ -66,6 +67,7 @@ namespace Tanks.Complete
         private void Start()
         {
             eventBus = ServiceLocator.Current.Get<EventBus>();
+            myTankId = GetComponent<ITankId>();
         }
 
         public void TakeDamage(float amount, int id, string name)
@@ -159,10 +161,11 @@ namespace Tanks.Complete
             m_ExplosionAudio.Play();
 
             // Turn the tank off.
-            respanSignal = new RespawnSignal(transform);
+            respanSignal = new RespawnSignal(transform,myTankId);
             eventBus.Invoke(respanSignal);
             transform.position = respanSignal.ObjectTransform.position;
             IncreaseHealth(m_StartingHealth);
+            m_Dead = false;
             //this.gameObject.SetActive(false);
             //StartCoroutine(Respawn());
         }
@@ -170,8 +173,8 @@ namespace Tanks.Complete
         IEnumerator Respawn()
         {
             yield return new WaitForSeconds(10f);
-            respanSignal = new RespawnSignal(transform);
-            eventBus.Invoke(respanSignal);
+            // respanSignal = new RespawnSignal(transform);
+            // eventBus.Invoke(respanSignal);
         }
     }
 }

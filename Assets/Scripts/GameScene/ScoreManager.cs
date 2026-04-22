@@ -3,6 +3,7 @@ using CustomEventBus;
 using TankBycicleOnline.CallBacks;
 using TMPro;
 using System.Collections.Generic;
+using TankBycicleOnline.Constants;
 
 
 public class ScoreManager : MonoBehaviour
@@ -22,12 +23,19 @@ public class ScoreManager : MonoBehaviour
         eventBus = ServiceLocator.Current.Get<EventBus>();
         eventBus.Subscribe<GiveScoreSignal>(GetScore);
         SimpleEventBus.IsEndGame += EndGameScore;
+        SimpleEventBus.GiveTankId += ChangeTankScore;
     }
 
     public void Disable()
     {
         eventBus.Unsubscribe<GiveScoreSignal>(GetScore);
         SimpleEventBus.IsEndGame -= EndGameScore;
+        SimpleEventBus.GiveTankId -= ChangeTankScore;
+    }
+    
+    private void ChangeTankScore(ITankId tankId)
+    {
+        dataOfPlayers[tankId.ID].Score -= Contstants.MinusScore;
     }
 
     private void GetScore(GiveScoreSignal scoreSignal)
@@ -67,6 +75,10 @@ public class ScoreManager : MonoBehaviour
         {
             menuScoreTextes[i].text = $"{scoreArray[i].Name}: {scoreArray[i].Score}";
         }
+        int bestScore = PlayerPrefs.GetInt("BestScore",0);
+        int bestPlayerScore = bestScore < dataOfPlayers[playerID].Score ?  dataOfPlayers[playerID].Score : bestScore;
+        PlayerPrefs.SetInt("BestScore",bestPlayerScore);
+        PlayerPrefs.Save(); 
 
     }
 
