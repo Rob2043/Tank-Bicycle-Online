@@ -14,6 +14,7 @@ namespace Tanks.Complete
     {
         [Tooltip("The player number. Without a tank selection menu, Player 1 is left keyboard control, Player 2 is right keyboard")]
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
+        [SerializeField] private float m_BackSpeedMultiplier = 0.6f;
         [Tooltip("The speed in unity unit/second the tank move at")]
         public float m_Speed = 12f;                 // How fast the tank moves forward and back.
         [Tooltip("The speed in deg/s that tank will rotate at")]
@@ -30,7 +31,7 @@ namespace Tanks.Complete
         public TankInputUser m_InputUser;            // The Input User component for that tanks. Contains the Input Actions.
 
         public Rigidbody Rigidbody => m_Rigidbody;
-        public int ID {get; set;}
+        public int ID { get; set; }
 
         public int ControlIndex { get; set; } = -1; //this define the index of the control 1 = left keyboard or pad, 2 = right keyboard, -1 = no control
 
@@ -261,7 +262,7 @@ namespace Tanks.Complete
             // }
 
             // Adjust the rigidbodies position and orientation in FixedUpdate.
-            Move();
+            //ove();
             //Turn ();
         }
 
@@ -321,21 +322,32 @@ namespace Tanks.Complete
 
         private void Rotate(RotateSignal rotate)
         {
-            Vector2 vector2 = rotate.Vector;
-            if (vector2.sqrMagnitude < 0.01f)
-                return;
+            if (SimpleEventBus.GetEnergy.Invoke() > 0f)
+            {
+                Vector2 input = rotate.Vector;
 
-            float direction = Mathf.Sign(vector2.x);
-            float rotationAmount = direction * m_TurnSpeed * Time.deltaTime;
+                if (input.sqrMagnitude < 0.01f)
+                {
+                    SimpleEventBus.GiveInput.Invoke(Vector2.zero);
+                    return;
+                }
 
-            transform.Rotate(0f, rotationAmount, 0f);
-            // float angel = -Mathf.Atan2(vector2.y, vector2.x) * Mathf.Rad2Deg;
 
-            // //angel += 90;
+                SimpleEventBus.GiveInput.Invoke(input);
 
-            // Quaternion targetRotation = Quaternion.Euler(0f,angel,0f);
+                float turn = input.x * m_TurnSpeed * Time.deltaTime;
+                transform.Rotate(0f, turn, 0f);
 
-            // transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, m_TurnSpeed * Time.deltaTime);
+                float speed = input.y > 0 ? m_Speed : m_Speed * m_BackSpeedMultiplier;
+                float moveAmount = input.y * speed;
+
+                // Едем в это же направление
+                Vector3 velocity = transform.forward * moveAmount;
+                velocity.y = m_Rigidbody.linearVelocity.y;
+
+                m_Rigidbody.linearVelocity = velocity;
+            }
+
         }
 
         public void AddExplosionForce(float explosionForce, Vector3 explosionPosition, float explosionRadius, float upwardsModifier = 0f)
