@@ -116,7 +116,9 @@ Assets/Scripts/
   KeyBoardInput.cs
   SliderInput.cs
  Tank/InputManager.cs
- UI/GameUI.cs
+ UI/
+  GameUI.cs
+  MainMenu.cs
 Assets/TutorialInfo/Scripts/Readme.cs
 Temp/obj/Assembly-CSharp/.NETStandard,Version=v2.1.AssemblyAttributes.cs
 

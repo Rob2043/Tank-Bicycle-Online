@@ -26,7 +26,6 @@ namespace Tanks.Complete
             // By default, pair to the keyboard, as this is the default input method. This allow this to work even without
             // a menu to assign any other input mode.
             SetNewInputUser(InputUser.PerformPairingWithDevice(Keyboard.current));
-            Debug.Log("Name of Input User" + m_InputUser);
         }
 
         /// <summary>

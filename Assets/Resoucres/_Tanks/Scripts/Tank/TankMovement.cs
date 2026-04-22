@@ -54,8 +54,6 @@ namespace Tanks.Complete
 
         private MoveSignal moveSignal;
 
-        private RotateSignal rotateSignal;
-
         public void Init()
         {
             if (!m_IsComputerControlled)

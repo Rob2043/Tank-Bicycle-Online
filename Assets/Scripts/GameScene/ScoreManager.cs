@@ -63,7 +63,7 @@ public class ScoreManager : MonoBehaviour
             else
                 scoreArray.Insert(index,data);
         }
-        for (int i = 0; i < menuScoreTextes.Length; i++)
+        for (int i = 0; i < scoreArray.Count; i++)
         {
             menuScoreTextes[i].text = $"{scoreArray[i].Name}: {scoreArray[i].Score}";
         }

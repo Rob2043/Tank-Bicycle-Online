@@ -36,15 +36,15 @@ namespace Game.Level
 
         private void Init()
         {
-            inputManager.Init();
-            scoreManager.Init();
-            timer.Init();
-            respawnManager.Init();
+            inputManager?.Init();
+            scoreManager?.Init();
+            timer?.Init();
+            respawnManager?.Init();
             foreach (var item in tankMovement)
             {
                 item.Init();
             }
-            energyManager.Init();
+            energyManager?.Init();
         }
 
         private void AddDisposables()
@@ -62,14 +62,14 @@ namespace Game.Level
 
         private void OnDisable()
         {
-            inputManager.Disable();
-            scoreManager.Disable();
-            respawnManager.Disable();
+            inputManager?.Disable();
+            scoreManager?.Disable();
+            respawnManager?.Disable();
             foreach (var item in tankMovement)
             {
                 item.Disable();
             }
-            energyManager.Disable();
+            energyManager?.Disable();
         }
     }
 }
