@@ -2,6 +2,7 @@ using UnityEngine;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
 using UnityEngine.UI;
+using TankBycicleOnline.Constants;
 
 
 public class EnergyManager : MonoBehaviour
@@ -13,12 +14,15 @@ public class EnergyManager : MonoBehaviour
     private EventBus eventBus;
     private MoveSignal moveSignal;
     private Vector2 input;
+    private float koefizientGiveEnergy = 1f;
+    private float time = 0f;
     public void Init()
     {
         eventBus = ServiceLocator.Current.Get<EventBus>();
         moveSignal = new MoveSignal();
         SimpleEventBus.GetEnergy += GetCurrentEnergy;
         SimpleEventBus.GiveInput += GiveInput;
+        SimpleEventBus.GiveTankId += ChangeKoefEnergy;
 
         if (slider != null)
         {
@@ -31,6 +35,7 @@ public class EnergyManager : MonoBehaviour
     {
         SimpleEventBus.GetEnergy -= GetCurrentEnergy;
         SimpleEventBus.GiveInput -= GiveInput;
+        SimpleEventBus.GiveTankId -= ChangeKoefEnergy;
     }
 
     private void Update()
@@ -43,8 +48,18 @@ public class EnergyManager : MonoBehaviour
             currentEnergy += enrgy * Time.deltaTime;
             return;
         }
+        if (koefizientGiveEnergy < 1f)
+        {
+            time -= Time.deltaTime;
+
+            if (time <= 0f)
+            {
+                time = 0f;
+                koefizientGiveEnergy = 1f;
+            }
+        }
         float generatedEnergy = moveSignal.Speed;
-        currentEnergy += generatedEnergy * Time.deltaTime;
+        currentEnergy += koefizientGiveEnergy * generatedEnergy * Time.deltaTime;
 
         float inputPower = Mathf.Clamp01(input.magnitude);
         if (inputPower > 0.01f && currentEnergy > 0f)
@@ -61,6 +76,12 @@ public class EnergyManager : MonoBehaviour
 
         if (slider != null)
             slider.value = currentEnergy;
+    }
+
+    private void ChangeKoefEnergy(ITankId tankId)
+    {
+        koefizientGiveEnergy -= 0.2f;
+        time = Contstants.TimeForDeceleration;
     }
 
     private void GiveInput(Vector2 vector)
