@@ -3857,6 +3857,54 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &7797350262707713806
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3429947086691312857}
+  - component: {fileID: 2769374342733171982}
+  m_Layer: 0
+  m_Name: EnergyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3429947086691312857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7797350262707713806}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.9028, y: -0.019729614, z: -0.733531}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5157611614329809928}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2769374342733171982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7797350262707713806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b99102b38dc88b4087fa3f13442f049, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnergyManager
+  slider: {fileID: 8192872604085926148}
+  maxEnergy: 2000
+  currentEnergy: 2000
+  energyConsumption: 400
 --- !u!1 &8027064290806156138
 GameObject:
   m_ObjectHideFlags: 0
@@ -5070,6 +5118,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5443234228210197641}
+    - targetCorrespondingSourceObject: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3429947086691312857}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 173472, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       insertIndex: -1
@@ -5081,6 +5132,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6534725102554987131}
   m_SourcePrefab: {fileID: 100100000, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
+--- !u!114 &5157611614322976282 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 11404512, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
+  m_PrefabInstance: {fileID: 5157611614329398010}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5157611614323037318 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 11482748, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
@@ -5132,10 +5194,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TankOnline
   HealthPlayer: {fileID: 5157611614323037318}
+  FillImagePlayer: {fileID: 5157611614322976282}
   HealthUI: {fileID: 3959578023889601279}
+  FillImageUI: {fileID: 6134780050115747311}
   _camera: {fileID: 8742213385093583003}
   _playersUI: {fileID: 8724768805456236870}
   inputManager: {fileID: 6534725102554987131}
+  energyManager: {fileID: 2769374342733171982}
 --- !u!114 &6534725102554987131
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Users;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
-using System.Runtime.InteropServices;
+using Photon.Pun;
+
 
 namespace Tanks.Complete
 {
     //Ensure it run before the TankShooting component as TankShooting grabs the InputUser from this when there are no
     //GameManager set (used during learning experience to test tank in empty scenes)
     [DefaultExecutionOrder(-10)]
-    public class TankMovement : MonoBehaviour, ITankId
+    public class TankMovement : MonoBehaviourPun, ITankId
     {
         [Tooltip("The player number. Without a tank selection menu, Player 1 is left keyboard control, Player 2 is right keyboard")]
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
@@ -123,10 +123,17 @@ namespace Tanks.Complete
             }
         }
 
+        private void OnDisable()
+        {
+            if (PhotonNetwork.InRoom)
+                Disable();
+        }
 
         private void Start()
         {
 
+            if (PhotonNetwork.InRoom)
+                Init();
 
             // If this is computer controlled...
             if (m_IsComputerControlled)

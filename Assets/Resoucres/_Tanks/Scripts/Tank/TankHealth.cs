@@ -4,6 +4,7 @@ using CustomEventBus;
 using TankBycicleOnline.CallBacks;
 using TankBycicleOnline.Constants;
 using System.Collections;
+using Photon.Pun;
 
 
 namespace Tanks.Complete
@@ -32,7 +33,12 @@ namespace Tanks.Complete
 
         private void Awake()
         {
-            // Instantiate the explosion prefab and get a reference to the particle system on it.
+            if (!PhotonNetwork.InRoom)
+                Init();
+        }
+
+        private void Init()
+        {            // Instantiate the explosion prefab and get a reference to the particle system on it.
             m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
 
             // Get a reference to the audio source on the instantiated prefab.
@@ -43,6 +49,7 @@ namespace Tanks.Complete
 
             // Set the slider max value to the max health the tank can have
             m_Slider.maxValue = m_StartingHealth;
+
         }
 
         private void OnDestroy()
@@ -53,6 +60,7 @@ namespace Tanks.Complete
 
         private void OnEnable()
         {
+
             // When the tank is enabled, reset the tank's health and whether or not it's dead.
             m_CurrentHealth = m_StartingHealth;
             m_Dead = false;
@@ -61,13 +69,17 @@ namespace Tanks.Complete
             m_IsInvincible = false;
 
             // Update the health slider's value and color.
-            SetHealthUI();
+
         }
 
         private void Start()
         {
             eventBus = ServiceLocator.Current.Get<EventBus>();
             myTankId = GetComponent<ITankId>();
+
+            if (PhotonNetwork.InRoom)
+                Init();
+            SetHealthUI();
         }
 
         public void TakeDamage(float amount, int id, string name)
@@ -75,7 +87,7 @@ namespace Tanks.Complete
             // Check if the tank is not invincible
             if (!m_IsInvincible)
             {
-                giveScoreSignal = new GiveScoreSignal(Const.DamageScore, id,name);
+                giveScoreSignal = new GiveScoreSignal(Const.DamageScore, id, name);
                 eventBus.Invoke(giveScoreSignal);
                 // Reduce current health by the amount of damage done.
                 m_CurrentHealth -= amount * (1 - m_ShieldValue);
@@ -86,7 +98,7 @@ namespace Tanks.Complete
                 // If the current health is at or below zero and it has not yet been registered, call OnDeath.
                 if (m_CurrentHealth <= 0f && !m_Dead)
                 {
-                    giveScoreSignal = new GiveScoreSignal(Const.DeathScore, id,name);
+                    giveScoreSignal = new GiveScoreSignal(Const.DeathScore, id, name);
                     eventBus.Invoke(giveScoreSignal);
                     OnDeath();
                 }
@@ -161,7 +173,7 @@ namespace Tanks.Complete
             m_ExplosionAudio.Play();
 
             // Turn the tank off.
-            respanSignal = new RespawnSignal(transform,myTankId);
+            respanSignal = new RespawnSignal(transform, myTankId);
             eventBus.Invoke(respanSignal);
             transform.position = respanSignal.ObjectTransform.position;
             IncreaseHealth(m_StartingHealth);

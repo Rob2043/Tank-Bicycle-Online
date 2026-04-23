@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon;
 using Photon.Pun;
+using TankBycicleOnline.Constants;
 
 public class SatrtOnlineGame : MonoBehaviour
 {
@@ -9,12 +10,15 @@ public class SatrtOnlineGame : MonoBehaviour
 
     private void Start()
     {
-        Transform spawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
+        int index = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % spawnPoints.Length;
+
+        Transform spawn = spawnPoints[index];
 
         PhotonNetwork.Instantiate(
             tankPrefab.name,
             spawn.position,
             spawn.rotation
         );
+
     }
 }

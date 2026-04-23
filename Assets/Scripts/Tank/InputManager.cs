@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
+using Photon.Pun;
 
 public class InputManager : MonoBehaviour
 {
@@ -23,6 +24,11 @@ public class InputManager : MonoBehaviour
             tankInput = new SliderInput(mySlider);
         }
 
+    }
+
+    private void Start() {
+        if(PhotonNetwork.InRoom)
+            Init();
     }
 
     private void GiveSpeed(MoveSignal moveSignal)

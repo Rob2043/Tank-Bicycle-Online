@@ -14,7 +14,7 @@ namespace Game.Level
         [SerializeField] private ScoreManager scoreManager;
         [SerializeField] private Timer timer;
         [SerializeField] private RespawnManager respawnManager;
-        [SerializeField] private EnergyManager energyManager;
+
 
         private EventBus _eventBus;
 
@@ -44,7 +44,6 @@ namespace Game.Level
             {
                 item?.Init();
             }
-            energyManager?.Init();
         }
 
         private void AddDisposables()
@@ -69,7 +68,6 @@ namespace Game.Level
             {
                 item?.Disable();
             }
-            energyManager?.Disable();
         }
     }
 }

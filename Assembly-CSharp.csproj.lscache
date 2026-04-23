@@ -53,19 +53,6 @@ Assets/Photon/PhotonChat/Demos/Demo Chat/Code/
   TextToggleIsOnTransition.cs
 Assets/
  Photon/PhotonRealtime/Demos/DemoLoadBalancing/ConnectAndJoinRandomLb.cs
- Resoucres/SlimUI/Modern Menu 1/Scripts/Audio/
-  CheckMusicVolume.cs
-  CheckSFXVolume.cs
- Resoucres/SlimUI/Modern Menu 1/Scripts/Managers/
-  UIMenuManager.cs
-  UISettingsManager.cs
- Resoucres/SlimUI/Modern Menu 1/Scripts/Misc/
-  ExtraLinks.cs
-  ResetDemo.cs
- Resoucres/SlimUI/Modern Menu 1/Scripts/ThemeEditor/
-  ThemedUI.cs
-  ThemedUIData.cs
-  ThemedUIElement.cs
  Resoucres/_Tanks/Scripts/
   Camera/CameraControl.cs
   Managers/
@@ -92,6 +79,19 @@ Assets/
     VirtualInputs/UIVirtualJoystick.cs
    PauseMenu.cs
    StartMenuSlot.cs
+ Resources/SlimUI/Modern Menu 1/Scripts/Audio/
+  CheckMusicVolume.cs
+  CheckSFXVolume.cs
+ Resources/SlimUI/Modern Menu 1/Scripts/Managers/
+  UIMenuManager.cs
+  UISettingsManager.cs
+ Resources/SlimUI/Modern Menu 1/Scripts/Misc/
+  ExtraLinks.cs
+  ResetDemo.cs
+ Resources/SlimUI/Modern Menu 1/Scripts/ThemeEditor/
+  ThemedUI.cs
+  ThemedUIData.cs
+  ThemedUIElement.cs
  Scripts/Abstraction/CallBacks/
   GiveScoreSignal.cs
   MoveSignal.cs

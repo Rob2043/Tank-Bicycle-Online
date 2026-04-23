@@ -821,7 +821,7 @@ MonoBehaviour:
   timerText: {fileID: 2067919468}
   endPanel: {fileID: 155083763}
   gamePanel: {fileID: 240510763}
-  startTime: 60
+  startTime: 600
 --- !u!1 &240510763 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8724768805456236870, guid: 55bab33939c07a347a206632042b05ed, type: 3}
@@ -1586,54 +1586,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 560560523}
   m_CullTransparentMesh: 1
---- !u!1 &565333557
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 565333559}
-  - component: {fileID: 565333558}
-  m_Layer: 0
-  m_Name: EnergyManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &565333558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 565333557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b99102b38dc88b4087fa3f13442f049, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnergyManager
-  slider: {fileID: 0}
-  maxEnergy: 2000
-  currentEnergy: 2000
-  energyConsumption: 400
---- !u!4 &565333559
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 565333557}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.9028, y: 5.64027, z: 15.71647}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &754020365
 GameObject:
   m_ObjectHideFlags: 0
@@ -3626,7 +3578,6 @@ MonoBehaviour:
   scoreManager: {fileID: 239388717}
   timer: {fileID: 239388718}
   respawnManager: {fileID: 543574819}
-  energyManager: {fileID: 565333558}
 --- !u!4 &2024374105
 Transform:
   m_ObjectHideFlags: 0
@@ -3901,6 +3852,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2769374342733171982, guid: 55bab33939c07a347a206632042b05ed, type: 3}
+      propertyPath: slider
+      value: 
+      objectReference: {fileID: 5896798362525958696}
     - target: {fileID: 3709328311536550871, guid: 55bab33939c07a347a206632042b05ed, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -4014,6 +3969,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55bab33939c07a347a206632042b05ed, type: 3}
+--- !u!114 &5896798362525958696 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8192872604085926148, guid: 55bab33939c07a347a206632042b05ed, type: 3}
+  m_PrefabInstance: {fileID: 5896798362525958695}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -4027,7 +3993,6 @@ SceneRoots:
   - {fileID: 142314696}
   - {fileID: 2024374105}
   - {fileID: 543574818}
-  - {fileID: 565333559}
   - {fileID: 1027104694}
   - {fileID: 837210179}
   - {fileID: 1970941700}

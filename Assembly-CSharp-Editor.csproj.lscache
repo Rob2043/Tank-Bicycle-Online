@@ -38,12 +38,12 @@ CommandLineArgsForDesignTimeEvaluation=-langversion:9.0 -define:UNITY_6000_3_13;
 /warnaserror+:NU1605
 
 [sourceFiles]
-Assets/Resoucres/
- SlimUI/Editor/SlimUIWindow.cs
- _Tanks/Scripts/Editor/
-  MoveSceneViewCamera.cs
-  PowerUpEditor.cs
-Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs
+Assets/Resoucres/_Tanks/Scripts/Editor/
+ MoveSceneViewCamera.cs
+ PowerUpEditor.cs
+Assets/
+ Resources/SlimUI/Editor/SlimUIWindow.cs
+ TutorialInfo/Scripts/Editor/ReadmeEditor.cs
 Temp/obj/Assembly-CSharp-Editor/.NETStandard,Version=v2.1.AssemblyAttributes.cs
 
 [metadataReferences]

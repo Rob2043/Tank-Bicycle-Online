@@ -74,12 +74,14 @@ namespace TankBycicleOnline.Online
 
         private void OnStartClicked()
         {
+            Debug.Log("Clicked");
             if (!PhotonNetwork.IsMasterClient)
                 return;
-
-            if (!AreAllPlayersReady())
+            Debug.Log("nEXT sTEP");
+            if (AreAllPlayersReady())
                 return;
 
+            Debug.Log("Satart Loading");
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
 
@@ -170,7 +172,7 @@ namespace TankBycicleOnline.Online
 
             TMP_Text btnText = readyButton.GetComponentInChildren<TMP_Text>();
             if (btnText != null)
-                btnText.text = localReady ? "Unready" : "Ready";
+                btnText.text = localReady ? "Ready" : "Unready";
         }
 
         private void RefreshStatus()

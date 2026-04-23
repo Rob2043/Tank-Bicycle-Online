@@ -16,13 +16,11 @@ public class EnergyManager : MonoBehaviour
     private Vector2 input;
     private float koefizientGiveEnergy = 1f;
     private float time = 0f;
-    public void Init()
+    public void Start()
     {
         eventBus = ServiceLocator.Current.Get<EventBus>();
         moveSignal = new MoveSignal();
-        SimpleEventBus.GetEnergy += GetCurrentEnergy;
-        SimpleEventBus.GiveInput += GiveInput;
-        SimpleEventBus.GiveTankId += ChangeKoefEnergy;
+
 
         if (slider != null)
         {
@@ -31,7 +29,14 @@ public class EnergyManager : MonoBehaviour
         }
     }
 
-    public void Disable()
+    private void OnEnable()
+    {
+        SimpleEventBus.GetEnergy += GetCurrentEnergy;
+        SimpleEventBus.GiveInput += GiveInput;
+        SimpleEventBus.GiveTankId += ChangeKoefEnergy;
+    }
+
+    public void OnDisable()
     {
         SimpleEventBus.GetEnergy -= GetCurrentEnergy;
         SimpleEventBus.GiveInput -= GiveInput;
