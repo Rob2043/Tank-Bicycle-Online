@@ -418,6 +418,16 @@ Library/ScriptAssemblies/
  UnityEngine.UI.dll
 Temp/bin/Debug/
  Assembly-CSharp.dll
+ PhotonChat.dll
+ PhotonRealtime.dll
+ PhotonUnityNetworking.Demos.dll
+ PhotonUnityNetworking.dll
+ PhotonUnityNetworking.Editor.dll
+ PhotonUnityNetworking.Utilities.Culling.Editor.dll
+ PhotonUnityNetworking.Utilities.dll
+ PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.dll
+ PunDemos.DemoHubEditor.dll
+ PunDemos.DemoSlotcarEditor.dll
  Unity.InputSystem.dll
  Unity.InputSystem.ForUI.dll
 
