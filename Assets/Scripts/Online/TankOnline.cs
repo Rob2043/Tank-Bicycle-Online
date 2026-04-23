@@ -8,6 +8,9 @@ public class TankOnline : MonoBehaviourPun
 {
     [SerializeField] private Slider HealthPlayer;
     [SerializeField] private Slider HealthUI;
+    [SerializeField] private GameObject _camera;
+    [SerializeField] private GameObject _playersUI;
+    [SerializeField] private InputManager inputManager;
     private TankHealth tankHealth;
     private void Start()
     {
@@ -21,6 +24,8 @@ public class TankOnline : MonoBehaviourPun
         {
             tankHealth.m_Slider = HealthPlayer;
             HealthPlayer.gameObject.SetActive(false);
+            _camera.SetActive(false);
+            inputManager.enabled = false;
         }
     }
 }

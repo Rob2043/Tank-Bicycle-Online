@@ -42,7 +42,7 @@ namespace Game.Level
             respawnManager?.Init();
             foreach (var item in tankMovement)
             {
-                item.Init();
+                item?.Init();
             }
             energyManager?.Init();
         }
@@ -67,7 +67,7 @@ namespace Game.Level
             respawnManager?.Disable();
             foreach (var item in tankMovement)
             {
-                item.Disable();
+                item?.Disable();
             }
             energyManager?.Disable();
         }
