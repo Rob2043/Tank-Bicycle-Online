@@ -71,7 +71,7 @@ public class EnergyManager : MonoBehaviour
                 currentEnergy = 0f;
         }
 
-        //currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
 
 
         if (slider != null)
