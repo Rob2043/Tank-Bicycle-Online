@@ -35,7 +35,7 @@ public class ScoreManager : MonoBehaviour
     
     private void ChangeTankScore(ITankId tankId)
     {
-        dataOfPlayers[tankId.ID].Score -= Contstants.MinusScore;
+        dataOfPlayers[tankId.ID].Score -= Const.MinusScore;
     }
 
     private void GetScore(GiveScoreSignal scoreSignal)

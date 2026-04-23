@@ -81,7 +81,7 @@ public class EnergyManager : MonoBehaviour
     private void ChangeKoefEnergy(ITankId tankId)
     {
         koefizientGiveEnergy -= 0.2f;
-        time = Contstants.TimeForDeceleration;
+        time = Const.TimeForDeceleration;
     }
 
     private void GiveInput(Vector2 vector)

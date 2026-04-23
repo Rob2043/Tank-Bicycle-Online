@@ -9,6 +9,10 @@ namespace CustomEventBus
         public static Func<float> GetEnergy;
         public static Action<Vector2> GiveInput;
         public static Action<ITankId> GiveTankId;
+        #region Online
+        public static Action OpenLobby; 
+        public static Action CloseLobby; 
+        #endregion Online
     }
 }
 

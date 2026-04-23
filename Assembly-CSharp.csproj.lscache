@@ -112,6 +112,12 @@ Assets/
    ScoreManager.cs
    Timer.cs
   InitGame.cs
+  Online/
+   MainMenuOnlineManager.cs
+   RoomLobbyManager.cs
+   RoomPlayerItem.cs
+   SatrtOnlineGame.cs
+   TankOnline.cs
   ServiceLocator.cs
   SimpleEventBus.cs
   StringConstants.cs
