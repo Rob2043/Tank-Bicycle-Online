@@ -5475,6 +5475,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08e008f5d698cf0409497dd3afd5c07c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TankOnline
+  ScoreText: {fileID: 5986425340621732143}
   HealthPlayer: {fileID: 681196026655798203}
   FillImagePlayer: {fileID: 190324165979016000}
   HealthUI: {fileID: 3959578023889601279}

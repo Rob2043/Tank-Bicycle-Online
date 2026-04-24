@@ -70,10 +70,8 @@ namespace Tanks.Complete
         {
             // if (!PhotonNetwork.InRoom)
             //     return;
-            Debug.Log("In Room");
             if (m_IsInvincible || m_Dead)
                 return;
-            Debug.Log("NotDead");
 
             float finalDamage = amount * (1f - m_ShieldValue);
             m_CurrentHealth -= finalDamage;
@@ -165,6 +163,9 @@ namespace Tanks.Complete
                 eventBus.Invoke(respawnSignal);
 
             transform.position = respawnSignal.ObjectTransform.position;
+            if (PhotonNetwork.InRoom)
+                photonView.RPC(nameof(RPC_Respawn), RpcTarget.All, respawnSignal.ObjectTransform.position, respawnSignal.ObjectTransform.rotation);
+
 
             m_CurrentHealth = m_StartingHealth;
             m_Dead = false;
@@ -193,14 +194,21 @@ namespace Tanks.Complete
         [PunRPC]
         public void RPC_Respawn(Vector3 pos, Quaternion rot, PhotonMessageInfo info)
         {
-            foreach (var player in FindObjectsOfType<PhotonView>())
+            Debug.Log("Respawn THIS object");
+            Debug.Log("Positoion "  + pos);
+            Rigidbody rb = GetComponent<Rigidbody>();
+
+            if (rb != null)
             {
-                if (player.Owner == info.Sender)
-                {
-                    player.transform.position = pos;
-                    player.transform.rotation = rot;
-                    break;
-                }
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.position = pos;
+                rb.rotation = rot;
+            }
+            else
+            {
+                transform.position = pos;
+                transform.rotation = rot;
             }
         }
 

@@ -7,6 +7,7 @@ public class SatrtOnlineGame : MonoBehaviour
 {
     [SerializeField] private GameObject tankPrefab;
     [SerializeField] private Transform[] spawnPoints;
+    [SerializeField] private ScoreManager scoreManager;
 
     private void Awake()
     {
@@ -20,5 +21,7 @@ public class SatrtOnlineGame : MonoBehaviour
             spawn.position,
             spawn.rotation
         );
+
+        scoreManager.scoreText = player.GetComponent<TankOnline>().ScoreText;
     }
 }

@@ -10,11 +10,11 @@ using Photon.Pun;
 public class ScoreManager : MonoBehaviourPun
 {
     [Header("UI")]
-    [SerializeField] private TMP_Text scoreText;
+    public TMP_Text scoreText;
     [SerializeField] private TMP_Text[] menuScoreTextes = new TMP_Text[5];
 
     [Header("Points")]
-    [SerializeField] private int playerID;
+    public int PlayerID;
 
     private Dictionary<int, PlayerData> dataOfPlayers = new Dictionary<int, PlayerData>();
     private List<int> playersId = new List<int>();
@@ -46,8 +46,8 @@ public class ScoreManager : MonoBehaviourPun
 
     private void ChangePlayeID(int id)
     {
-        playerID = id;
-        Debug.Log("Player ID: " + playerID);
+        PlayerID = id;
+        Debug.Log("Player ID: " + PlayerID);
     }
 
     private void ChangeTankScore(ITankId tankId)
@@ -113,8 +113,8 @@ public class ScoreManager : MonoBehaviourPun
             if (!string.IsNullOrEmpty(playerName))
                 dataOfPlayers[id].Name = playerName;
         }
-
-        if (id == playerID && scoreText != null)
+        Debug.Log($"ADD SCORE id:{id} score:{score} playerID:{PlayerID}");
+        if (id == PlayerID && scoreText != null)
         {
             scoreText.text = $"{dataOfPlayers[id].Score}";
         }
@@ -122,8 +122,6 @@ public class ScoreManager : MonoBehaviourPun
 
     private void EndGameScore()
     {
-        if (scoreText != null)
-            scoreText.gameObject.SetActive(false);
 
         scoreArray.Clear();
 
@@ -146,10 +144,10 @@ public class ScoreManager : MonoBehaviourPun
             menuScoreTextes[i].text = $"{scoreArray[i].Name}: {scoreArray[i].Score}";
         }
 
-        if (dataOfPlayers.ContainsKey(playerID))
+        if (dataOfPlayers.ContainsKey(PlayerID))
         {
             int bestScore = PlayerPrefs.GetInt("BestScore", 0);
-            int currentScore = dataOfPlayers[playerID].Score;
+            int currentScore = dataOfPlayers[PlayerID].Score;
 
             if (currentScore > bestScore)
             {

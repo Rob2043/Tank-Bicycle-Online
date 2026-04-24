@@ -1,11 +1,13 @@
 using UnityEngine;
-using Photon;
 using Photon.Pun;
 using Tanks.Complete;
 using UnityEngine.UI;
+using TMPro;
 
-public class TankOnline : MonoBehaviourPun
+public class TankOnline : MonoBehaviourPun 
 {
+    [Header("UI")]
+    public TMP_Text ScoreText;
     [SerializeField] private Slider HealthPlayer;
     [SerializeField] private Image FillImagePlayer;
     [SerializeField] private Slider HealthUI;

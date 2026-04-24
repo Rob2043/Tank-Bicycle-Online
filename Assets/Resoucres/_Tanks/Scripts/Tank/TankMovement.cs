@@ -72,9 +72,9 @@ namespace Tanks.Complete
                 ID = photonView.Owner.ActorNumber;
                 Name = photonView.Owner.NickName;
             }
-            SimpleEventBus.SendPlayersID?.Invoke(ID);
 
-
+            if(photonView.IsMine)
+                SimpleEventBus.SendPlayersID?.Invoke(ID);
 
             m_Rigidbody = GetComponent<Rigidbody>();
 

@@ -116,6 +116,7 @@ Assets/
    IServise.cs
    ITankId.cs
    ITankInput.cs
+   ITankOnline.cs
  Scripts/
   CallbackWithPriority.cs
   EventBus.cs

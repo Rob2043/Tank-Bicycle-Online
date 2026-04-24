@@ -368,6 +368,7 @@ MonoBehaviour:
   - {fileID: 1935440916}
   - {fileID: 1405977685}
   - {fileID: 786900264}
+  scoreManager: {fileID: 239388717}
 --- !u!4 &138068216
 Transform:
   m_ObjectHideFlags: 0
@@ -806,7 +807,7 @@ MonoBehaviour:
   - {fileID: 831596584}
   - {fileID: 90393216}
   - {fileID: 1408379963}
-  playerID: 1
+  PlayerID: 0
 --- !u!114 &239388718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -821,7 +822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CountdownTimer
   timerText: {fileID: 2067919468}
   endPanel: {fileID: 155083763}
-  gamePanel: {fileID: 0}
+  gamePanel: {fileID: 2067919466}
   startTime: 120
 --- !u!114 &239388719
 MonoBehaviour:
@@ -1065,7 +1066,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &439443427
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1606,7 +1607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &754020366
 RectTransform:
   m_ObjectHideFlags: 0

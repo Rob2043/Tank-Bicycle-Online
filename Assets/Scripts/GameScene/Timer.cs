@@ -12,7 +12,7 @@ public class Timer : MonoBehaviourPun
     [SerializeField] private float startTime = 60f;
 
     private double startNetworkTime;
-    private bool isRunning = true;
+    private bool isRunning = false;
     private bool isEnded = false;
 
     private EventBus eventBus;
@@ -34,6 +34,8 @@ public class Timer : MonoBehaviourPun
         else
         {
             startNetworkTime = Time.time;
+            isRunning = true;
+            isEnded = false;
         }
     }
 
@@ -67,6 +69,8 @@ public class Timer : MonoBehaviourPun
         startNetworkTime = networkStartTime;
         isRunning = true;
         isEnded = false;
+
+        Debug.Log($"Timer started. StartNetworkTime: {startNetworkTime}");
     }
 
     private void UpdateTimerText(float time)
@@ -82,7 +86,7 @@ public class Timer : MonoBehaviourPun
         Time.timeScale = 0f;
 
         endPanel.SetActive(true);
-        gamePanel.SetActive(false);
+        gamePanel?.SetActive(false);
 
         SimpleEventBus.IsEndGame?.Invoke();
 
