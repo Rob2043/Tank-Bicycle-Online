@@ -364,10 +364,7 @@ Library/ScriptAssemblies/
  UnityEditor.UI.dll
  UnityEngine.TestRunner.dll
  UnityEngine.UI.dll
-Temp/bin/Debug/
- PhotonRealtime.dll
- PhotonUnityNetworking.dll
- PhotonUnityNetworking.Utilities.dll
+Temp/bin/Debug/PhotonUnityNetworking.Utilities.dll
 
 [analyzerReferences]
 ../../../Program Files/Unity/Hub/Editor/6000.3.13f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/
