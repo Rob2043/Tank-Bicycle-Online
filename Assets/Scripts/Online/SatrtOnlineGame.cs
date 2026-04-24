@@ -1,24 +1,24 @@
 using UnityEngine;
 using Photon;
 using Photon.Pun;
-using TankBycicleOnline.Constants;
+using CustomEventBus;
 
 public class SatrtOnlineGame : MonoBehaviour
 {
     [SerializeField] private GameObject tankPrefab;
     [SerializeField] private Transform[] spawnPoints;
 
-    private void Start()
+    private void Awake()
     {
-        int index = (PhotonNetwork.LocalPlayer.ActorNumber - 1) % spawnPoints.Length;
+        int actorId = PhotonNetwork.LocalPlayer.ActorNumber;
+        int spawnIndex = (actorId - 1) % spawnPoints.Length;
 
-        Transform spawn = spawnPoints[index];
+        Transform spawn = spawnPoints[spawnIndex];
 
-        PhotonNetwork.Instantiate(
+        GameObject player = PhotonNetwork.Instantiate(
             tankPrefab.name,
             spawn.position,
             spawn.rotation
         );
-
     }
 }

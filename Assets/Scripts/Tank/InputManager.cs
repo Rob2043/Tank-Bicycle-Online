@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
 using Photon.Pun;
+using Tanks.Complete;
 
 public class InputManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Slider  mySlider;
     private ITankInput tankInput;
     private EventBus _eventBus;
+
+    private PhotonView  photonView;
 
     public void Init()
     {
@@ -27,8 +30,11 @@ public class InputManager : MonoBehaviour
     }
 
     private void Start() {
-        if(PhotonNetwork.InRoom)
+        photonView = GetComponent<PhotonView>();
+        if(PhotonNetwork.InRoom && photonView.IsMine)
+        {
             Init();
+        }
     }
 
     private void GiveSpeed(MoveSignal moveSignal)

@@ -62,8 +62,19 @@ namespace Tanks.Complete
                 moveSignal = new MoveSignal();
                 _eventBus.Subscribe<RotateSignal>(Rotate);
             }
-            ID = m_PlayerNumber;
-            Name = playerName;
+            if (!PhotonNetwork.InRoom)
+            {
+                ID = m_PlayerNumber;
+                Name = playerName;
+            }
+            if (PhotonNetwork.InRoom && photonView.Owner != null)
+            {
+                ID = photonView.Owner.ActorNumber;
+                Name = photonView.Owner.NickName;
+            }
+            SimpleEventBus.SendPlayersID?.Invoke(ID);
+
+
 
             m_Rigidbody = GetComponent<Rigidbody>();
 
@@ -328,7 +339,7 @@ namespace Tanks.Complete
             m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation);
         }
 
-        private void Rotate(RotateSignal rotate)
+        public void Rotate(RotateSignal rotate)
         {
             if (SimpleEventBus.GetEnergy.Invoke() > 0f)
             {

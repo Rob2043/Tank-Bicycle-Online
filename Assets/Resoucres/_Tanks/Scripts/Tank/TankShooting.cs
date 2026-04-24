@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Photon.Pun;
 
 namespace Tanks.Complete
 {
     public class TankShooting : MonoBehaviour
     {
+        [SerializeField] private GameObject onlineBullet;
         public Rigidbody m_Shell;                   // Prefab of the shell.
         public Transform m_FireTransform;           // A child of the tank where the shells are spawned.
         public Slider m_AimSlider;                  // A child of the tank that displays the current launch force.
@@ -30,11 +32,11 @@ namespace Tanks.Complete
 
         [HideInInspector]
         public TankInputUser m_InputUser;           // The Input User component for that tanks. Contains the Input Actions. 
-        
+
         public float CurrentChargeRatio =>
             (m_CurrentLaunchForce - m_MinLaunchForce) / (m_MaxLaunchForce - m_MinLaunchForce); //The charging amount between 0-1
         public bool IsCharging => m_IsCharging;
-        
+
         public bool m_IsComputerControlled { get; set; } = false;
 
         private string m_FireButton;                // The input axis that is used for launching shells.
@@ -47,7 +49,10 @@ namespace Tanks.Complete
         private bool m_IsCharging = false;          // Are we currently charging the shot
         private float m_BaseMinLaunchForce;         // The initial value of m_MinLaunchForce
         private float m_ShotCooldownTimer;          // The timer counting down before a shot is allowed again
-        
+        private PhotonView photonView;
+        private ITankId myTankId;
+        private ShellExplosion explosionData;
+
         private void OnEnable()
         {
             // When the tank is turned on, reset the launch force, the UI and the power ups
@@ -68,12 +73,14 @@ namespace Tanks.Complete
                 m_InputUser = gameObject.AddComponent<TankInputUser>();
         }
 
-        private void Start ()
+        private void Start()
         {
+            photonView = GetComponent<PhotonView>();
+            myTankId = GetComponent<ITankId>();
             // The fire axis is based on the player number.
             m_FireButton = "Fire";
             fireAction = m_InputUser.ActionAsset.FindAction(m_FireButton);
-            
+
             fireAction.Enable();
 
             // The rate that the launch force charges up is the range of possible forces by the max charge time.
@@ -81,7 +88,7 @@ namespace Tanks.Complete
         }
 
 
-        private void Update ()
+        private void Update()
         {
             // Computer and Human control Tank use 2 different update functions 
             if (!m_IsComputerControlled)
@@ -106,7 +113,7 @@ namespace Tanks.Complete
 
             // Change the clip to the charging clip and start it playing.
             m_ShootingAudio.clip = m_ChargingClip;
-            m_ShootingAudio.Play ();
+            m_ShootingAudio.Play();
         }
 
         public void StopCharging()
@@ -128,7 +135,7 @@ namespace Tanks.Complete
             {
                 // ... use the max force and launch the shell.
                 m_CurrentLaunchForce = m_MaxLaunchForce;
-                Fire ();
+                Fire();
             }
             // Otherwise, if the fire button is being held and the shell hasn't been launched yet...
             else if (m_IsCharging && !m_Fired)
@@ -142,19 +149,34 @@ namespace Tanks.Complete
             else if (fireAction.WasReleasedThisFrame() && !m_Fired)
             {
                 // ... launch the shell.
-                Fire ();
+                Fire();
                 m_IsCharging = false;
             }
         }
-        
+
         void HumanUpdate()
+        {
+            if (PhotonNetwork.InRoom)
+            {
+                if (photonView.IsMine)
+                {
+                    UpdateForFire();
+                }
+            }
+            else
+                UpdateForFire();
+
+
+        }
+
+        private void UpdateForFire()
         {
             // if there is a cooldown timer, decrement it
             if (m_ShotCooldownTimer > 0.0f)
             {
                 m_ShotCooldownTimer -= Time.deltaTime;
             }
-            
+
             // The slider should have a default value of the minimum launch force.
             m_AimSlider.value = m_BaseMinLaunchForce;
 
@@ -163,7 +185,7 @@ namespace Tanks.Complete
             {
                 // ... use the max force and launch the shell.
                 m_CurrentLaunchForce = m_MaxLaunchForce;
-                Fire ();
+                Fire();
             }
             // Otherwise, if the fire button has just started being pressed...
             else if (m_ShotCooldownTimer <= 0 && fireAction.WasPressedThisFrame())
@@ -174,7 +196,7 @@ namespace Tanks.Complete
 
                 // Change the clip to the charging clip and start it playing.
                 m_ShootingAudio.clip = m_ChargingClip;
-                m_ShootingAudio.Play ();
+                m_ShootingAudio.Play();
             }
             // Otherwise, if the fire button is being held and the shell hasn't been launched yet...
             else if (fireAction.IsPressed() && !m_Fired)
@@ -188,28 +210,44 @@ namespace Tanks.Complete
             else if (fireAction.WasReleasedThisFrame() && !m_Fired)
             {
                 // ... launch the shell.
-                Fire ();
+                Fire();
             }
         }
 
-
-        private void Fire ()
+        private void Fire()
         {
             // Set the fired flag so only Fire is only called once.
             m_Fired = true;
 
             // Create an instance of the shell and store a reference to it's rigidbody.
-            Rigidbody shellInstance =
-                Instantiate (m_Shell, m_FireTransform.position, m_FireTransform.rotation, transform) as Rigidbody;
+            Rigidbody shellInstance;
+            ShellExplosionOnline shellExplosionOnline;
+            if (PhotonNetwork.InRoom)
+            {
+                GameObject bull = PhotonNetwork.Instantiate(onlineBullet.name, m_FireTransform.position, m_FireTransform.rotation);
+                shellInstance = bull.GetComponent<Rigidbody>();
+                shellExplosionOnline = bull.GetComponent<ShellExplosionOnline>();
+                shellExplosionOnline.Init(myTankId.ID, myTankId.Name);
 
-            // Set the shell's velocity to the launch force in the fire position's forward direction.
-            shellInstance.linearVelocity = m_CurrentLaunchForce * m_FireTransform.forward;
+                shellInstance.linearVelocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
-            ShellExplosion explosionData = shellInstance.GetComponent<ShellExplosion>();
-            explosionData.m_ExplosionForce = m_ExplosionForce;
-            explosionData.m_ExplosionRadius = m_ExplosionRadius;
-            explosionData.m_MaxDamage = m_MaxDamage;
-            
+                shellExplosionOnline.m_ExplosionForce = m_ExplosionForce;
+                shellExplosionOnline.m_ExplosionRadius = m_ExplosionRadius;
+                shellExplosionOnline.m_MaxDamage = m_MaxDamage;
+            }
+            else
+            {
+                shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation, transform) as Rigidbody;
+
+                // Set the shell's velocity to the launch force in the fire position's forward direction.
+                shellInstance.linearVelocity = m_CurrentLaunchForce * m_FireTransform.forward;
+
+                explosionData = shellInstance.GetComponent<ShellExplosion>();
+                explosionData.m_ExplosionForce = m_ExplosionForce;
+                explosionData.m_ExplosionRadius = m_ExplosionRadius;
+                explosionData.m_MaxDamage = m_MaxDamage;
+            }
+
             // Increase the damage if extra damage PowerUp is active
             if (m_HasSpecialShell)
             {
@@ -217,7 +255,7 @@ namespace Tanks.Complete
                 // Reset the default values after increasing the damage of the fired shell
                 m_HasSpecialShell = false;
                 m_SpecialShellMultiplier = 1f;
-                
+
                 PowerUpDetector powerUpDetector = GetComponent<PowerUpDetector>();
                 if (powerUpDetector != null)
                     powerUpDetector.m_HasActivePowerUp = false;
@@ -229,7 +267,7 @@ namespace Tanks.Complete
 
             // Change the clip to the firing clip and play it.
             m_ShootingAudio.clip = m_FireClip;
-            m_ShootingAudio.Play ();
+            m_ShootingAudio.Play();
 
             // Reset the launch force.  This is a precaution in case of missing button events.
             m_CurrentLaunchForce = m_MinLaunchForce;
@@ -251,13 +289,13 @@ namespace Tanks.Complete
         /// <returns>The position at which the projectile will be (ignore obstacle)</returns>
         public Vector3 GetProjectilePosition(float chargingLevel)
         {
-            float chargeLevel = Mathf.Lerp (m_MinLaunchForce, m_MaxLaunchForce, chargingLevel);
-            Vector3 velocity = chargeLevel * m_FireTransform.forward; 
-            
+            float chargeLevel = Mathf.Lerp(m_MinLaunchForce, m_MaxLaunchForce, chargingLevel);
+            Vector3 velocity = chargeLevel * m_FireTransform.forward;
+
             float a = 0.5f * Physics.gravity.y;
             float b = velocity.y;
             float c = m_FireTransform.position.y;
-            
+
             float sqrtContent = b * b - 4 * a * c;
             //no solution
             if (sqrtContent <= 0)
@@ -269,7 +307,7 @@ namespace Tanks.Complete
             float answer2 = (-b - Mathf.Sqrt(sqrtContent)) / (2 * a);
 
             float answer = answer1 > 0 ? answer1 : answer2;
-            
+
             Vector3 position = m_FireTransform.position +
                                new Vector3(velocity.x, 0, velocity.z) *
                                answer;

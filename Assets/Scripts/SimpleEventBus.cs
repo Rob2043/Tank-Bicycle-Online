@@ -12,6 +12,8 @@ namespace CustomEventBus
         #region Online
         public static Action OpenLobby; 
         public static Action CloseLobby; 
+        public static Action<int> SendPlayersID;
+        public static Action AddScoreOnline;
         #endregion Online
     }
 }

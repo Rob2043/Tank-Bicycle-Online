@@ -3,53 +3,47 @@ using UnityEngine.UI;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
 using TankBycicleOnline.Constants;
-using System.Collections;
 using Photon.Pun;
-
 
 namespace Tanks.Complete
 {
-    public class TankHealth : MonoBehaviour
+    public class TankHealth : MonoBehaviourPun
     {
-        public float m_StartingHealth = 100f;               // The amount of health each tank starts with.
-        public Slider m_Slider;                             // The slider to represent how much health the tank currently has.
-        public Image m_FillImage;                           // The image component of the slider.
-        public Color m_FullHealthColor = Color.green;    // The color the health bar will be when on full health.
-        public Color m_ZeroHealthColor = Color.red;      // The color the health bar will be when on no health.
-        public GameObject m_ExplosionPrefab;                // A prefab that will be instantiated in Awake, then used whenever the tank dies.
-        [HideInInspector] public bool m_HasShield;          // Has the tank picked up a shield power up?
+        public float m_StartingHealth = 100f;
+        public Slider m_Slider;
+        public Image m_FillImage;
+        public Color m_FullHealthColor = Color.green;
+        public Color m_ZeroHealthColor = Color.red;
+        public GameObject m_ExplosionPrefab;
+        [HideInInspector] public bool m_HasShield;
 
+        private AudioSource m_ExplosionAudio;
+        private ParticleSystem m_ExplosionParticles;
 
-        private AudioSource m_ExplosionAudio;               // The audio source to play when the tank explodes.
-        private ParticleSystem m_ExplosionParticles;        // The particle system the will play when the tank is destroyed.
-        private float m_CurrentHealth;                      // How much health the tank currently has.
-        private bool m_Dead;                                // Has the tank been reduced beyond zero health yet?
-        private float m_ShieldValue;                        // Percentage of reduced damage when the tank has a shield.
-        private bool m_IsInvincible;                        // Is the tank invincible in this moment?
+        private float m_CurrentHealth;
+        private bool m_Dead;
+        private float m_ShieldValue;
+        private bool m_IsInvincible;
+
         private EventBus eventBus;
-        private GiveScoreSignal giveScoreSignal;
-        private RespawnSignal respanSignal;
         private ITankId myTankId;
 
-        private void Awake()
+        private void Start()
         {
-            if (!PhotonNetwork.InRoom)
+            eventBus = ServiceLocator.Current.Get<EventBus>();
+            myTankId = GetComponent<ITankId>();
+            if (PhotonNetwork.InRoom)
                 Init();
+            ResetHealth();
         }
 
-        private void Init()
-        {            // Instantiate the explosion prefab and get a reference to the particle system on it.
+        public void Init()
+        {
             m_ExplosionParticles = Instantiate(m_ExplosionPrefab).GetComponent<ParticleSystem>();
-
-            // Get a reference to the audio source on the instantiated prefab.
             m_ExplosionAudio = m_ExplosionParticles.GetComponent<AudioSource>();
-
-            // Disable the prefab so it can be activated when it's required.
             m_ExplosionParticles.gameObject.SetActive(false);
 
-            // Set the slider max value to the max health the tank can have
             m_Slider.maxValue = m_StartingHealth;
-
         }
 
         private void OnDestroy()
@@ -58,135 +52,169 @@ namespace Tanks.Complete
                 Destroy(m_ExplosionParticles.gameObject);
         }
 
-        private void OnEnable()
+        private void ResetHealth()
         {
-
-            // When the tank is enabled, reset the tank's health and whether or not it's dead.
             m_CurrentHealth = m_StartingHealth;
             m_Dead = false;
             m_HasShield = false;
-            m_ShieldValue = 0;
+            m_ShieldValue = 0f;
             m_IsInvincible = false;
 
-            // Update the health slider's value and color.
-
-        }
-
-        private void Start()
-        {
-            eventBus = ServiceLocator.Current.Get<EventBus>();
-            myTankId = GetComponent<ITankId>();
+            SetHealthUI();
 
             if (PhotonNetwork.InRoom)
-                Init();
-            SetHealthUI();
+                photonView.RPC(nameof(RPC_SetHealth), RpcTarget.Others, m_CurrentHealth);
         }
 
-        public void TakeDamage(float amount, int id, string name)
+        public void TakeDamage(float amount, int attackerId, string attackerName)
         {
-            // Check if the tank is not invincible
-            if (!m_IsInvincible)
+            // if (!PhotonNetwork.InRoom)
+            //     return;
+            Debug.Log("In Room");
+            if (m_IsInvincible || m_Dead)
+                return;
+            Debug.Log("NotDead");
+
+            float finalDamage = amount * (1f - m_ShieldValue);
+            m_CurrentHealth -= finalDamage;
+            m_CurrentHealth = Mathf.Clamp(m_CurrentHealth, 0f, m_StartingHealth);
+
+            if (eventBus != null)
             {
-                giveScoreSignal = new GiveScoreSignal(Const.DamageScore, id, name);
-                eventBus.Invoke(giveScoreSignal);
-                // Reduce current health by the amount of damage done.
-                m_CurrentHealth -= amount * (1 - m_ShieldValue);
+                eventBus.Invoke(new GiveScoreSignal(Const.DamageScore, attackerId, attackerName));
+            }
 
-                // Change the UI elements appropriately.
-                SetHealthUI();
+            SetHealthUI();
 
-                // If the current health is at or below zero and it has not yet been registered, call OnDeath.
-                if (m_CurrentHealth <= 0f && !m_Dead)
+            if (PhotonNetwork.InRoom)
+                photonView.RPC(nameof(RPC_SetHealth), RpcTarget.Others, m_CurrentHealth);
+
+            if (m_CurrentHealth <= 0f)
+            {
+                if (eventBus != null)
                 {
-                    giveScoreSignal = new GiveScoreSignal(Const.DeathScore, id, name);
-                    eventBus.Invoke(giveScoreSignal);
-                    OnDeath();
+                    if (!PhotonNetwork.InRoom)
+                        eventBus.Invoke(new GiveScoreSignal(Const.DeathScore, attackerId, attackerName));
+                    else
+                        eventBus.Invoke(new GiveScoreSignalOnline(Const.DeathScore, attackerId, attackerName));
                 }
+
+                OnDeath();
             }
         }
-
 
         public void IncreaseHealth(float amount)
         {
-            // Check if adding the amount would keep the health within the maximum limit
-            if (m_CurrentHealth + amount <= m_StartingHealth)
-            {
-                // If the new health value is within the limit, add the amount
-                m_CurrentHealth += amount;
-            }
-            else
-            {
-                // If the new health exceeds the starting health, set it at the maximum
-                m_CurrentHealth = m_StartingHealth;
-            }
+            if (PhotonNetwork.InRoom && !photonView.IsMine)
+                return;
 
-            // Change the UI elements appropriately.
+            m_CurrentHealth += amount;
+            m_CurrentHealth = Mathf.Clamp(m_CurrentHealth, 0f, m_StartingHealth);
+
             SetHealthUI();
-        }
 
+            if (PhotonNetwork.InRoom)
+                photonView.RPC(nameof(RPC_SetHealth), RpcTarget.Others, m_CurrentHealth);
+        }
 
         public void ToggleShield(float shieldAmount)
         {
-            // Inverts the value of has shield.
-            m_HasShield = !m_HasShield;
+            if (PhotonNetwork.InRoom && !photonView.IsMine)
+                return;
 
-            // Stablish the amount of damage that will be reduced by the shield
-            if (m_HasShield)
-            {
-                m_ShieldValue = shieldAmount;
-            }
-            else
-            {
-                m_ShieldValue = 0;
-            }
+            m_HasShield = !m_HasShield;
+            m_ShieldValue = m_HasShield ? shieldAmount : 0f;
         }
 
         public void ToggleInvincibility()
         {
+            if (PhotonNetwork.InRoom && !photonView.IsMine)
+                return;
+
             m_IsInvincible = !m_IsInvincible;
         }
 
-
         private void SetHealthUI()
         {
-            // Set the slider's value appropriately.
-            m_Slider.value = m_CurrentHealth;
+            if (m_Slider != null)
+                m_Slider.value = m_CurrentHealth;
 
-            // Interpolate the color of the bar between the choosen colours based on the current percentage of the starting health.
-            m_FillImage.color = Color.Lerp(m_ZeroHealthColor, m_FullHealthColor, m_CurrentHealth / m_StartingHealth);
+            if (m_FillImage != null)
+                m_FillImage.color = Color.Lerp(
+                    m_ZeroHealthColor,
+                    m_FullHealthColor,
+                    m_CurrentHealth / m_StartingHealth
+                );
         }
-
 
         private void OnDeath()
         {
-            // Set the flag so that this function is only called once.
+            if (m_Dead)
+                return;
+
             m_Dead = true;
 
-            // Move the instantiated explosion prefab to the tank's position and turn it on.
-            m_ExplosionParticles.transform.position = transform.position;
-            m_ExplosionParticles.gameObject.SetActive(true);
+            if (PhotonNetwork.InRoom)
+                photonView.RPC(nameof(RPC_PlayExplosion), RpcTarget.All, transform.position);
+            else
+                PlayExplosion(transform.position);
 
-            // Play the particle system of the tank exploding.
-            m_ExplosionParticles.Play();
+            RespawnSignal respawnSignal = new RespawnSignal(transform, myTankId);
 
-            // Play the tank explosion sound effect.
-            m_ExplosionAudio.Play();
+            if (eventBus != null)
+                eventBus.Invoke(respawnSignal);
 
-            // Turn the tank off.
-            respanSignal = new RespawnSignal(transform, myTankId);
-            eventBus.Invoke(respanSignal);
-            transform.position = respanSignal.ObjectTransform.position;
-            IncreaseHealth(m_StartingHealth);
+            transform.position = respawnSignal.ObjectTransform.position;
+
+            m_CurrentHealth = m_StartingHealth;
             m_Dead = false;
-            //this.gameObject.SetActive(false);
-            //StartCoroutine(Respawn());
+
+            SetHealthUI();
+
+            if (PhotonNetwork.InRoom)
+                photonView.RPC(nameof(RPC_SetHealth), RpcTarget.Others, m_CurrentHealth);
         }
 
-        IEnumerator Respawn()
+        [PunRPC]
+        private void RPC_SetHealth(float health)
         {
-            yield return new WaitForSeconds(10f);
-            // respanSignal = new RespawnSignal(transform);
-            // eventBus.Invoke(respanSignal);
+            Debug.Log("Set HEalth");
+            m_CurrentHealth = health;
+            Debug.Log("Health: " + m_CurrentHealth);
+            SetHealthUI();
+        }
+
+        [PunRPC]
+        private void RPC_PlayExplosion(Vector3 position)
+        {
+            PlayExplosion(position);
+        }
+
+        [PunRPC]
+        public void RPC_Respawn(Vector3 pos, Quaternion rot, PhotonMessageInfo info)
+        {
+            foreach (var player in FindObjectsOfType<PhotonView>())
+            {
+                if (player.Owner == info.Sender)
+                {
+                    player.transform.position = pos;
+                    player.transform.rotation = rot;
+                    break;
+                }
+            }
+        }
+
+        private void PlayExplosion(Vector3 position)
+        {
+            if (m_ExplosionParticles == null)
+                return;
+
+            m_ExplosionParticles.transform.position = position;
+            m_ExplosionParticles.gameObject.SetActive(true);
+            m_ExplosionParticles.Play();
+
+            if (m_ExplosionAudio != null)
+                m_ExplosionAudio.Play();
         }
     }
 }

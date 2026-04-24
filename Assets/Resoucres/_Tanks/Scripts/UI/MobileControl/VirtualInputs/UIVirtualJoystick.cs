@@ -4,6 +4,7 @@ using UnityEngine.InputSystem.Layouts;
 using UnityEngine.InputSystem.OnScreen;
 using CustomEventBus;
 using TankBycicleOnline.CallBacks;
+using Photon.Pun;
 
 
 namespace Tanks.Complete
@@ -24,6 +25,8 @@ namespace Tanks.Complete
         [InputControl(layout = "Vector2")]
         [SerializeField]
         private string m_ControlPath;
+        [Header("For Online Movement")]
+        [SerializeField] private TankMovement tankMovement;
 
         private EventBus eventBus;
         private RotateSignal rotateSignal;
@@ -39,7 +42,15 @@ namespace Tanks.Complete
         private void Update()
         {
             rotateSignal = new RotateSignal(mainVector);
-            eventBus.Invoke(rotateSignal);
+
+            if (PhotonNetwork.InRoom)
+            {
+                tankMovement.Rotate(rotateSignal);
+            }
+            else
+            {
+                eventBus.Invoke(rotateSignal);
+            }
         }
 
         private void SetupHandle()

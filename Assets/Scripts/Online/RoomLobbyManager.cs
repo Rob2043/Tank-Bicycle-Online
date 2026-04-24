@@ -3,7 +3,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using TankBycicleOnline.Constants;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +12,7 @@ namespace TankBycicleOnline.Online
     {
         [Header("Panels")]
         [SerializeField] private GameObject roomPanel;
+        [SerializeField] private GameObject mainPanel;
 
         [Header("Buttons")]
         [SerializeField] private Button readyButton;
@@ -52,9 +52,14 @@ namespace TankBycicleOnline.Online
             ClearAllSlots();
         }
 
+        private void Update() {
+            RefreshAll();
+        }
+
         public void OpenLobby()
         {
             roomPanel.SetActive(true);
+            mainPanel.SetActive(false);
             localReady = false;
             RefreshAll();
         }
@@ -62,6 +67,7 @@ namespace TankBycicleOnline.Online
         public void CloseLobby()
         {
             roomPanel.SetActive(false);
+            mainPanel.SetActive(true);
             ClearAllSlots();
         }
 
@@ -78,7 +84,7 @@ namespace TankBycicleOnline.Online
             if (!PhotonNetwork.IsMasterClient)
                 return;
             Debug.Log("nEXT sTEP");
-            if (AreAllPlayersReady())
+            if (!AreAllPlayersReady())
                 return;
 
             Debug.Log("Satart Loading");
@@ -172,7 +178,7 @@ namespace TankBycicleOnline.Online
 
             TMP_Text btnText = readyButton.GetComponentInChildren<TMP_Text>();
             if (btnText != null)
-                btnText.text = localReady ? "Ready" : "Unready";
+                btnText.text = localReady ? "Unready" : "Ready";
         }
 
         private void RefreshStatus()
