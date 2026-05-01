@@ -1182,7 +1182,7 @@ MonoBehaviour:
   - {fileID: 831596584}
   - {fileID: 90393216}
   - {fileID: 1408379963}
-  playerID: 1
+  PlayerID: 0
 --- !u!114 &239388718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3898,7 +3898,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.29
       objectReference: {fileID: 0}
     - target: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3906,7 +3906,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 16.45
+      value: 18.4
       objectReference: {fileID: 0}
     - target: {fileID: 446194, guid: 756d3a6506f2f8241b4e8badde68567a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6004,6 +6004,7 @@ MonoBehaviour:
   invertXOutputValue: 0
   invertYOutputValue: 0
   m_ControlPath: <Gamepad>/leftStick
+  tankMovement: {fileID: 0}
 --- !u!114 &1876149849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6660,7 +6661,6 @@ MonoBehaviour:
   scoreManager: {fileID: 239388717}
   timer: {fileID: 239388718}
   respawnManager: {fileID: 543574819}
-  energyManager: {fileID: 565333558}
 --- !u!4 &2024374105
 Transform:
   m_ObjectHideFlags: 0

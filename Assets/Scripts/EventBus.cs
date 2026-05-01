@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OnlineBeginner.EventBus;
+using CarStreetPro.EventBus;
 using UnityEngine;
 
 namespace CustomEventBus

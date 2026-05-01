@@ -1,5 +1,5 @@
 ﻿
-namespace OnlineBeginner.EventBus
+namespace CarStreetPro.EventBus
 {
     public class CallbackWithPriority
     {
